@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <algorithm>
 
 using namespace std;
 
@@ -100,7 +101,7 @@ void vector_to_result(char* result[]){
 			*p = j;
 			p++;
 		}
-		*p = '\0';
+		if(p) *p = '\0';
 		p++;
 	}
 }
@@ -131,6 +132,37 @@ int get_all(char* result[]){
 	return now.size();
 }
 
-int get_max(char* result[], char head, char tail, bool enable_loop, bool enable_self_loop){
-
+int get_max_DAG(char* result[], char head, char tail, bool enable_self_loop, bool weighted){
+	int a[26], f[26], g[26], h[26];
+	for(int i = 0;i < 26;i++) a[col[i] - 1] = i;
+	for(int i = 0;i < 26;i++){
+		int x = a[i];
+		f[x] = !tail || tail - 'a' == x ? 0 : -1e9;
+		g[x] = h[x] = -1;
+		for(auto j : v[x]){
+			int to = s[j].back() - 'a';
+			if(to == x) continue;
+			int val = f[to] + (weighted ? s[j].length() : 1);
+			if(val > f[x]) f[x] = val, g[x] = j;
+		}
+		if(!enable_self_loop) continue;
+		for(auto j : v[x]){
+			int to = s[j].back() - 'a';
+			if(to == x){
+				f[x] += weighted ? s[j].length() : 1;
+				h[x] = j;
+				break;
+			}
+		}
+	}
+	int x = head ? head - 'a' : max_element(f, f + 26) - f;
+	while(1){
+		if(h[x] != -1) ans.push_back(s[h[x]]);
+		if(g[x] == -1) break;
+		ans.push_back(s[g[x]]);
+		x = s[g[x]].back() - 'a';
+	}
+	vector_to_result(result);
+	return f[x];
+	
 }
