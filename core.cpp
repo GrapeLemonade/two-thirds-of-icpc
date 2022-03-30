@@ -1,6 +1,7 @@
 #include "core.h"
 #include <vector>
 #include <string>
+#include <stdexcept>
 
 using namespace std;
 
@@ -53,11 +54,43 @@ void get_SCC(){
 }
 
 void check_loop(){
-
+	for(int i = 0;i < n;i++){
+		int last = -1;
+		for(auto j : v[i]){
+			if(s[j].back() - 'a' == i){
+				if(last == -1) last = j;
+				else throw invalid_argument("Word ring detected: " + s[last] + " " + s[j]);
+			}
+		}
+	}
+	get_SCC();
+	if(tot < 26){
+		bool siz[27] = {0}, vis[26] = {0};
+		for(int i = 0;i < 26;i++){
+			if(siz[col[i]]){
+				int x = i;
+				string S;
+				while(!vis[x]){
+					S += " ";
+					S += s[x];
+					vis[x] = true;
+					for(auto j : v[x]){
+						int to = s[j].back() - 'a';
+						if(col[to] == col[i]){
+							x = to;
+							break;
+						}
+					}
+				}
+				throw invalid_argument("Word ring detected: " + S);
+			}
+			siz[col[i]] = true;
+		}
+	}
 }
 
 int get_all(char* result[]){
-
+		
 }
 
 int get_max(char* result[], char head, char tail, bool enable_loop, bool enable_self_loop){
