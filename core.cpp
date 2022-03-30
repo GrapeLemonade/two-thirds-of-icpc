@@ -3,6 +3,7 @@
 #include <string>
 #include <stdexcept>
 #include <algorithm>
+#include <cassert>
 
 using namespace std;
 
@@ -16,7 +17,7 @@ void init_words(char* words[], int len){
 		if(S.length() == 1) continue; // 单个字母不算单词
 		s.push_back(S);
 	}
-	m = s.size();
+	m = (int)s.size();
 }
 
 vector<int> v[26];
@@ -93,15 +94,17 @@ vector<string> ans;
 
 void vector_to_result(char* result[]){
 	int siz = 0;
-	for(auto &i : ans) siz += i.length() + 1;
+	for(auto &i : ans) siz += (int)i.length() + 1;
 	char* p = (char*) malloc(siz);
 	for(int i = 0;i < ans.size();i++){
 		result[i] = p;
 		for(auto j : ans[i]){
+			assert(p);
 			*p = j;
 			p++;
 		}
-		if(p) *p = '\0';
+		assert(p);
+		*p = 0;
 		p++;
 	}
 }
@@ -129,7 +132,7 @@ void dfs_all(int i, bool loop){
 int get_all(char* result[]){
 	for(int i = 0;i < 26;i++) dfs_all(i, false);
 	vector_to_result(result);
-	return now.size();
+	return (int)now.size();
 }
 
 int get_max_DAG(char* result[], char head, char tail, bool enable_self_loop, bool weighted){
@@ -137,25 +140,25 @@ int get_max_DAG(char* result[], char head, char tail, bool enable_self_loop, boo
 	for(int i = 0;i < 26;i++) a[col[i] - 1] = i;
 	for(int i = 0;i < 26;i++){
 		int x = a[i];
-		f[x] = !tail || tail - 'a' == x ? 0 : -1e9;
+		f[x] = !tail || tail - 'a' == x ? 0 : (int)-1e9;
 		g[x] = h[x] = -1;
 		for(auto j : v[x]){
 			int to = s[j].back() - 'a';
 			if(to == x) continue;
-			int val = f[to] + (weighted ? s[j].length() : 1);
+			int val = f[to] + (weighted ? (int)s[j].length() : 1);
 			if(val > f[x]) f[x] = val, g[x] = j;
 		}
 		if(!enable_self_loop) continue;
 		for(auto j : v[x]){
 			int to = s[j].back() - 'a';
 			if(to == x){
-				f[x] += weighted ? s[j].length() : 1;
+				f[x] += weighted ? (int)s[j].length() : 1;
 				h[x] = j;
 				break;
 			}
 		}
 	}
-	int x = head ? head - 'a' : max_element(f, f + 26) - f;
+	int x = head ? head - 'a' : (int)(max_element(f, f + 26) - f);
 	while(1){
 		if(h[x] != -1) ans.push_back(s[h[x]]);
 		if(g[x] == -1) break;
@@ -164,5 +167,4 @@ int get_max_DAG(char* result[], char head, char tail, bool enable_self_loop, boo
 	}
 	vector_to_result(result);
 	return f[x];
-	
 }
