@@ -4,8 +4,11 @@
 #include <stdexcept>
 #include <algorithm>
 #include <cassert>
+#include <map>
 
 using namespace std;
+
+typedef long long ll;
 
 const int n = 26;
 int m;
@@ -167,4 +170,66 @@ int get_max_DAG(char* result[], char head, char tail, bool enable_self_loop, boo
 	}
 	vector_to_result(result);
 	return f[x];
+}
+
+map<tuple<ll, ll, int>, pair<int, int> > mp;
+pair<ll, ll> val;
+vector<pair<int, int> > w[26][26];
+vector<int> V[26];
+int pos[26][26];
+char Tail;
+
+void modify_val(int i){
+	if(i < 64) val.first += (1ll << i);
+	else val.second += 1ll << (i - 64);
+}
+
+void dfs_max(int i){
+	if(mp.find(make_tuple(val.first, val.second, i)) != mp.end()) return;
+	int ans = Tail == -1 || i == Tail ? 0 : (int)-1e9, id = -1;
+	pair<int, int> Val = val;
+	if(pos[i][i] < w[i][i].size()){
+		modify_val(w[i][i][pos[i][i]].second), pos[i][i]++;
+		dfs_max(i);
+		ans = mp[make_tuple(val.first, val.second, i)].first + w[i][i][pos[i][i] - 1].first; 
+		id = i;
+		val = Val, pos[i][i]--;
+	}else{
+		for(auto j : V[i]) if(pos[i][j] < w[i][j].size()){
+			if(col[i] == col[j]) modify_val(w[i][j][pos[i][j]].second);
+			else val = {0, 0};
+			pos[i][j]++;
+			dfs_max(j);
+			int sum = mp[make_tuple(val.first, val.second, j)].first + w[i][j][pos[i][j] - 1].first;
+			if(ans < sum) sum = ans, id = j;
+			val = Val, pos[i][j]--;
+		}
+	}
+	mp[make_tuple(val.first, val.second, i)] = {ans, id};
+}
+
+int get_max(char* result[], char head, char tail, bool weighted){
+	for(int i = 0;i < m;i++){
+		w[s[i][0] - 'a'][s[i].back() - 'a'].push_back({weighted ? (int)s[i].length() : 1, i});
+		V[s[i][0] - 'a'].push_back(s[i].back() - 'a');
+	}
+	for(int i = 0;i < 26;i++) for(int j = 0;j < 26;j++) sort(w[i][j].begin(), w[i][j].end());
+	for(int i = 0;i < 26;i++) sort(V[i].begin(), V[i].end()), V[i].erase(unique(V[i].begin(), V[i].end()), V[i].end());
+	Tail = tail ? tail - 'a' : -1;
+	int x = -1;
+	for(int i = 0;i < 26;i++) if(!head || head - 'a' == i){
+		dfs_max(i);
+		if(x == -1 || mp[make_tuple(0, 0, i)].first > mp[make_tuple(0, 0, x)].first) x = i;
+	}
+	while(1){
+		int j = mp[make_tuple(val.first, val.second, x)].second;
+		if(j == -1) break;
+		ans.push_back(s[w[x][j][pos[x][j]].second]);
+		if(col[x] == col[j]) modify_val(w[x][j][pos[x][j]].second);
+		else val = {0, 0};
+		pos[x][j]++;
+		x = j;
+	}
+	vector_to_result(result);
+	return mp[make_tuple(0, 0, x)].first;
 }
