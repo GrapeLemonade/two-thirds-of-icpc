@@ -234,21 +234,43 @@ int get_max(char* result[], char head, char tail, bool weighted){
 	return len;
 }
 
+
+/*
+* type = 0, enable self loop, disable ring, get all chains.
+* type = 1, enable self loop, disable ring, get max chain.
+* type = 2, disable self loop, disable ring, get max chain.
+* type = 3, enable ring, get max chain.
+*/
+
 int engine(
 	char* words[],
 	int len,
 	char* result[],
 	char head,
 	char tail,
-	bool count,
-	bool weighted,
-	bool enable_self_loop,
-	bool enable_ring){
-	
+	int type,
+	bool weighted = false){
+
 	init_words(words, len);
 	get_SCC();
-	if(!enable_ring) check_loop();
-	if(!count) return get_all(result);
-	else if(enable_ring) return get_max(result, head, tail, weighted);
-	else return get_max_DAG(result, head, tail, enable_self_loop, weighted);
+	if(type < 3) check_loop();
+	if(type == 0) return get_all(result);
+	if(type == 3) return get_max(result, head, tail, weighted);
+	return get_max_DAG(result, head, tail, type == 1, weighted);
+}
+
+int gen_chain_word(char* words[], int len, char* result[], char head, char tail, bool enable_loop){
+	return engine(words, len, result, head, tail, enable_loop ? 3 : 1);
+}
+
+int gen_chains_all(char* words[], int len, char* result[]){
+	return engine(words, len, result, 0, 0, 0);
+}
+
+int gen_chain_word_unique(char* words[], int len, char* result[]){
+	return engine(words, len, result, 0, 0, 2);
+}
+
+int gen_chain_char(char* words[], int len, char* result[], char head, char tail, bool enable_loop){
+	return engine(words, len, result, head, tail, enable_loop ? 3 : 1, true);
 }

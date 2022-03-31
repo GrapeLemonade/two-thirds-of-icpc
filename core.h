@@ -1,13 +1,7 @@
-void init_words(char* words[], int len);
+int gen_chain_word(char* words[], int len, char* result[], char head, char tail, bool enable_loop);
 
-void get_SCC();
+int gen_chains_all(char* words[], int len, char* result[]);
 
-void check_loop();
+int gen_chain_word_unique(char* words[], int len, char* result[]);
 
-int get_all(char* result[]);
-
-int get_max_DAG(char* result[], char head, char tail, bool enable_self_loop, bool weighted);
-
-int get_max(char* result[], char head, char tail, bool weighted);
-
-int engine(char* words[], int len, char* result[], char head, char tail, bool count, bool weighted, bool enable_self_loop, bool enable_ring);
+int gen_chain_char(char* words[], int len, char* result[], char head, char tail, bool enable_loop);
