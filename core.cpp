@@ -67,7 +67,6 @@ void check_loop(){
 			}
 		}
 	}
-	get_SCC();
 	if(tot < 26){
 		bool siz[27] = {0}, vis[26] = {0};
 		for(int i = 0;i < 26;i++){
@@ -187,11 +186,11 @@ void modify_val(int i){
 void dfs_max(int i){
 	if(mp.find(make_tuple(val.first, val.second, i)) != mp.end()) return;
 	int ans = Tail == -1 || i == Tail ? 0 : (int)-1e9, id = -1;
-	pair<int, int> Val = val;
+	pair<ll, ll> Val = val;
 	if(pos[i][i] < w[i][i].size()){
 		modify_val(w[i][i][pos[i][i]].second), pos[i][i]++;
 		dfs_max(i);
-		ans = mp[make_tuple(val.first, val.second, i)].first + w[i][i][pos[i][i] - 1].first; 
+		ans = mp[make_tuple(val.first, val.second, i)].first + w[i][i][(long long)pos[i][i] - 1].first; 
 		id = i;
 		val = Val, pos[i][i]--;
 	}else{
@@ -200,7 +199,7 @@ void dfs_max(int i){
 			else val = {0, 0};
 			pos[i][j]++;
 			dfs_max(j);
-			int sum = mp[make_tuple(val.first, val.second, j)].first + w[i][j][pos[i][j] - 1].first;
+			int sum = mp[make_tuple(val.first, val.second, j)].first + w[i][j][(long long)pos[i][j] - 1].first;
 			if(ans < sum) sum = ans, id = j;
 			val = Val, pos[i][j]--;
 		}
