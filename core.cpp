@@ -134,7 +134,7 @@ void dfs_all(int i, bool loop){
 int get_all(char* result[]){
 	for(int i = 0;i < 26;i++) dfs_all(i, false);
 	vector_to_result(result);
-	return (int)now.size();
+	return (int)ans.size();
 }
 
 int get_max_DAG(char* result[], char head, char tail, bool enable_self_loop, bool weighted){
@@ -160,7 +160,7 @@ int get_max_DAG(char* result[], char head, char tail, bool enable_self_loop, boo
 			}
 		}
 	}
-	int x = head ? head - 'a' : (int)(max_element(f, f + 26) - f);
+	int x = head ? head - 'a' : (int)(max_element(f, f + 26) - f), len = f[x];
 	while(1){
 		if(h[x] != -1) ans.push_back(s[h[x]]);
 		if(g[x] == -1) break;
@@ -168,7 +168,7 @@ int get_max_DAG(char* result[], char head, char tail, bool enable_self_loop, boo
 		x = s[g[x]].back() - 'a';
 	}
 	vector_to_result(result);
-	return f[x];
+	return len;
 }
 
 map<tuple<ll, ll, int>, pair<int, int> > mp;
@@ -176,7 +176,7 @@ pair<ll, ll> val;
 vector<pair<int, int> > w[26][26];
 vector<int> V[26];
 int pos[26][26];
-char Tail;
+int Tail;
 
 void modify_val(int i){
 	if(i < 64) val.first += (1ll << i);
@@ -200,7 +200,7 @@ void dfs_max(int i){
 			pos[i][j]++;
 			dfs_max(j);
 			int sum = mp[make_tuple(val.first, val.second, j)].first + w[i][j][(long long)pos[i][j] - 1].first;
-			if(ans < sum) sum = ans, id = j;
+			if(ans < sum) ans = sum, id = j;
 			val = Val, pos[i][j]--;
 		}
 	}
@@ -220,6 +220,7 @@ int get_max(char* result[], char head, char tail, bool weighted){
 		dfs_max(i);
 		if(x == -1 || mp[make_tuple(0, 0, i)].first > mp[make_tuple(0, 0, x)].first) x = i;
 	}
+	int len = mp[make_tuple(0, 0, x)].first;
 	while(1){
 		int j = mp[make_tuple(val.first, val.second, x)].second;
 		if(j == -1) break;
@@ -230,7 +231,7 @@ int get_max(char* result[], char head, char tail, bool weighted){
 		x = j;
 	}
 	vector_to_result(result);
-	return mp[make_tuple(0, 0, x)].first;
+	return len;
 }
 
 int engine(
@@ -247,7 +248,7 @@ int engine(
 	init_words(words, len);
 	get_SCC();
 	if(!enable_ring) check_loop();
-	if(count) return get_all(result);
+	if(!count) return get_all(result);
 	else if(enable_ring) return get_max(result, head, tail, weighted);
 	else return get_max_DAG(result, head, tail, enable_self_loop, weighted);
 }
