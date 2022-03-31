@@ -233,3 +233,20 @@ int get_max(char* result[], char head, char tail, bool weighted){
 	vector_to_result(result);
 	return mp[make_tuple(0, 0, x)].first;
 }
+
+int engine(
+	char* words[],
+	int len,
+	char* result[],
+	char head,
+	char tail,
+	bool count,
+	bool weighted,
+	bool enable_self_loop,
+	bool enable_ring) {
+	
+	init_words(words, len);
+	if (count) return get_all(result);
+	else if (enable_ring) return get_max(result, head, tail, weighted);
+	else return get_max_DAG(result, head, tail, enable_self_loop, weighted);
+}
