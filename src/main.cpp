@@ -10,7 +10,7 @@ int main(){
 
 	//char* words[] = {(char*)"algebra", (char*)"apple", (char*)"zoo", (char*)"elephat", (char*)"under", (char*)"fox", (char*)"dog", (char*)"moon", (char*)"leaf", (char*)"trick", (char*)"pseudopseudohypoparathyroidism"};
 	//char** result = (char**)malloc(10000);
-	//int cnt = engine(words, 11, result, 0, 0, true, false, true, false);
+	//int cnt = engine(words, 11, result, 0, 0, 1, false);
 	//for(int i = 0;i < cnt;i++) printf("%s\n", result[i]);
 
 	//char* words[] = {(char*)"algebra", (char*)"apple", (char*)"zoo", (char*)"elephat", (char*)"under", (char*)"fox", (char*)"dog", (char*)"moon", (char*)"leaf", (char*)"trick", (char*)"pseudopseudohypoparathyroidism"};

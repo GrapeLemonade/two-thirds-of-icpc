@@ -15,6 +15,7 @@ int m;
 vector<string> s;
 
 void init_words(char* words[], int len){
+	s.clear();
 	for(int i = 0;i < len;i++){
 		string S = words[i];
 		if(S.length() == 1) continue; // 单个字母不算单词
@@ -53,6 +54,8 @@ void dfs_SCC(int i){
 }
 
 void get_SCC(){
+	for(int i = 0;i < 26;i++) v[i].clear(), vis[i] = false;
+	cnt = tot = 0;
 	for(int i = 0;i < m;i++) v[s[i][0] - 'a'].push_back(i);
 	for(int i = 0;i < n;i++) if(!vis[i]) dfs_SCC(i);
 }
@@ -109,6 +112,7 @@ void vector_to_result(char* result[]){
 		*p = 0;
 		p++;
 	}
+	ans.clear();
 }
 
 vector<int> now;
@@ -208,6 +212,9 @@ void dfs_max(int i){
 }
 
 int get_max(char* result[], char head, char tail, bool weighted){
+	mp.clear(), val = {0, 0};
+	for(int i = 0;i < 26;i++) for(int j = 0;j < 26;j++) w[i][j].clear(), pos[i][j] = 0;
+	for(int i = 0;i < 26;i++) V[i].clear();
 	for(int i = 0;i < m;i++){
 		w[s[i][0] - 'a'][s[i].back() - 'a'].push_back({weighted ? (int)s[i].length() : 1, i});
 		V[s[i][0] - 'a'].push_back(s[i].back() - 'a');
