@@ -242,10 +242,12 @@ int engine(
 	bool count,
 	bool weighted,
 	bool enable_self_loop,
-	bool enable_ring) {
+	bool enable_ring){
 	
 	init_words(words, len);
-	if (count) return get_all(result);
-	else if (enable_ring) return get_max(result, head, tail, weighted);
+	get_SCC();
+	if(!enable_ring) check_loop();
+	if(count) return get_all(result);
+	else if(enable_ring) return get_max(result, head, tail, weighted);
 	else return get_max_DAG(result, head, tail, enable_self_loop, weighted);
 }
