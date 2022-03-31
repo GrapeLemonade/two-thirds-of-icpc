@@ -266,6 +266,25 @@ int engine(
 	return get_max_DAG(result, head, tail, type == 1, weighted);
 }
 
+int engine(
+	char* words[],
+	int len,
+	char* result[],
+	char head,
+	char tail,
+	bool count,
+	bool weighted,
+	bool enable_self_loop,
+	bool enable_ring) {
+
+	int type = 0;
+	if (count) type = 0;
+	else if (enable_ring) type = 3;
+	else if (enable_self_loop) type = 1;
+	else type = 2;
+	return engine(words, len, result, head, tail, type, weighted);
+}
+
 int gen_chain_word(char* words[], int len, char* result[], char head, char tail, bool enable_loop){
 	return engine(words, len, result, head, tail, enable_loop ? 3 : 1);
 }
