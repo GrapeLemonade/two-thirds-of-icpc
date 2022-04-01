@@ -7,8 +7,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace test_gen_chain_word
-{
+namespace test_gen_chain_word_correctness{
 
 	void test(char* words[], int len, char* ans[], int ans_len, char head, char tail, bool enable_loop){
 		char** result = (char**)malloc(10000);
@@ -39,7 +38,7 @@ namespace test_gen_chain_word
 		return seed;
 	}
 
-	TEST_CLASS(test_gen_chain_word){
+	TEST_CLASS(test_gen_chain_word_correctness){
 	public:
 
 		/*
@@ -214,8 +213,7 @@ namespace test_gen_chain_word
 	};
 }
 
-namespace test_gen_chain_char
-{
+namespace test_gen_chain_char_correctness{
 
 	void test(char* words[], int len, char* ans[], int ans_len, char head, char tail, bool enable_loop){
 		char** result = (char**)malloc(10000);
@@ -249,8 +247,17 @@ namespace test_gen_chain_char
 		return seed;
 	}
 
-	TEST_CLASS(test_gen_chain_char){
+	TEST_CLASS(test_gen_chain_char_correctness){
 	public:
+
+		/*
+		* -c 样例
+		*/ 
+		TEST_METHOD(example_c){
+			char* words[] = {"algebra", "apple", "zoo", "elephant", "under", "fox", "dog", "moon", "leaf", "trick", "pseudopseudohypoparathyroidism"};
+			char* ans[] = {"pseudopseudohypoparathyroidism", "moon"};
+			test(words, 11, ans, 2, 0, 0, false);
+		}
 
 		/*
 		* 对拍，head 和 tail 均无限制
@@ -312,4 +319,60 @@ namespace test_gen_chain_char
 		}
 	};
 }
+
+namespace test_gen_chains_all_correctness{
+
+	void test(char* words[], int len, char* ans[], int ans_len){
+		char** result = (char**)malloc(10000);
+		int out_len = gen_chains_all(words, len, result);
+		Assert::AreEqual(ans_len, out_len);
+		for(int i = 0;i < ans_len;i++){
+			if(result != NULL) Assert::AreEqual(strcmp(ans[i], result[i]), 0);
+			else Assert::Fail();
+		}
+	}
+
+	TEST_CLASS(test_gen_chains_all_correctness){
+	public:
+
+		/*
+		* -n 样例
+		*/ 
+		TEST_METHOD(example_n){
+			char* words[] = {"woo", "oom", "moon", "noox"};
+			char* ans[] = {"moon noox", "oom moon", "oom moon noox", "woo oom", "woo oom moon", "woo oom moon noox"};
+			test(words, 4, ans, 6);
+		}
+
+	};
+}
+
+namespace test_gen_chain_word_unique_correctness{
+
+	void test(char* words[], int len, char* ans[], int ans_len){
+		char** result = (char**)malloc(10000);
+		int out_len = gen_chain_word_unique(words, len, result);
+		Assert::AreEqual(ans_len, out_len);
+		for(int i = 0;i < ans_len;i++){
+			if(result != NULL) Assert::AreEqual(strcmp(ans[i], result[i]), 0);
+			else Assert::Fail();
+		}
+	}
+
+	TEST_CLASS(test_gen_chain_word_unique_correctness){
+	public:
+
+		/*
+		* -w 样例
+		*/ 
+		TEST_METHOD(example_w){
+			char* words[] = {"algebra", "apple", "zoo", "elephant", "under", "fox", "dog", "moon", "leaf", "trick", "pseudopseudohypoparathyroidism"};
+			char* ans[] = {"apple", "elephant", "trick"};
+			test(words, 11, ans, 3);
+		}
+
+	};
+}
+
+
 
