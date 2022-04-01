@@ -70,7 +70,7 @@ namespace test_gen_chain_word
 				assert(words[a[i - 1]] != NULL);
 				assert(words[a[i]] != NULL);
 				if(words[a[i]][0] != words[a[i - 1]][2]) break;
-				if(!tail || words[a[i]][b[a[i]] - 1] != tail) ans = max(ans, i + 1);
+				if(!tail || words[a[i]][b[a[i]] - 1] == tail) ans = max(ans, i + 1);
 			}
 		}while(std::next_permutation(a, a + len));
 		if(ans == 1) ans = 0;
@@ -126,6 +126,9 @@ namespace test_gen_chain_word
 		int ans_len;
 		if(len <= 8){
 			ans_len = dp(words, len, head, tail);
+			//if(ans_len != brute_force(words, len, head, tail)){
+			//	assert(0);
+			//}
 			Assert::AreEqual(ans_len, brute_force(words, len, head, tail));
 		}else ans_len = dp(words, len, head, tail);
 		Assert::AreEqual(ans_len, out_len);
@@ -247,13 +250,56 @@ namespace test_gen_chain_word
 
 
 		/*
-		* 对拍，O(n!) 全排列枚举，O(n^2 2^n) 状压 dp
+		* 对拍，head 和 tail 均无限制
 		*/ 
-		TEST_METHOD(stresses){
-			for(int len = 3;len <= 18;len++){
+		TEST_METHOD(stresses_0_0){
+			for(int len = 1;len <= 18;len++){
 				for(int i = 0;i < 5;i++){
+					seed = (len << 7) | (i << 13) ^ 123;
 					stress(n, false, len, i, 0, 0);
 					stress(n, true, len, i, 0, 0);
+				}
+			}
+		}
+
+		/*
+		* 对拍，head 有限制 tail 无限制
+		*/ 
+		TEST_METHOD(stresses_1_0){
+			for(int len = 1;len <= 18;len++){
+				for(int i = 0;i < 5;i++){
+					seed = (len << 7) | (i << 13) ^ 345;
+					char head = rand() % n + 'a';
+					stress(n, false, len, i, head, 0);
+					stress(n, true, len, i, head, 0);
+				}
+			}
+		}
+
+		/*
+		* 对拍，head 无限制 tail 有限制
+		*/ 
+		TEST_METHOD(stresses_0_1){
+			for(int len = 1;len <= 18;len++){
+				for(int i = 0;i < 5;i++){
+					seed = (len << 7) | (i << 13) ^ 567;
+					char tail = rand() % n + 'a';
+					stress(n, false, len, i, 0, tail);
+					stress(n, true, len, i, 0, tail);
+				}
+			}
+		}
+
+		/*
+		* 对拍，head 和 tail 均有限制
+		*/ 
+		TEST_METHOD(stresses_1_1){
+			for(int len = 1;len <= 18;len++){
+				for(int i = 0;i < 5;i++){
+					seed = (len << 7) | (i << 13) ^ 789;
+					char head = rand() % n + 'a', tail = rand() % n + 'a';
+					stress(n, false, len, i, head, tail);
+					stress(n, true, len, i, head, tail);
 				}
 			}
 		}
