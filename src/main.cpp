@@ -1,8 +1,11 @@
 ﻿#include <filesystem>
 #include <stdexcept>
 #include <iostream>
+#include <utility>
 #include <fstream>
+#include <cassert>
 #include <cctype>
+#include <array>
 #include <set>
 
 #include "core.h"
@@ -11,10 +14,8 @@
 using namespace std;
 namespace fs = filesystem;
 
-char* source[0x800000];
-char* ans[0x8000];
-
 const string allowed_options = "chmnrtw";
+const string output_filename = "solution.txt";
 
 int main(int argc, char* argv[]) {
 	try {
@@ -37,8 +38,9 @@ int main_serve(int argc, char* argv[]) {
 	bool count = false;
 	bool normal = false;
 	bool weighted = false;
-	bool enable_self_loop = true;
+	bool file_output = false;
 	bool enable_ring = false;
+	bool enable_self_loop = true;
 	char head = 0, tail = 0;
 	if (argc <= 1) {
 		throw invalid_argument("missing arguments");
@@ -68,12 +70,15 @@ int main_serve(int argc, char* argv[]) {
 				break;
 			case 'w':
 				normal = true;
+				file_output = true;
 				break;
 			case 'm':
 				enable_self_loop = false;
+				file_output = true;
 				break;
 			case 'c':
 				weighted = true;
+				file_output = true;
 				break;
 			case 'h':
 			case 't':
@@ -124,6 +129,7 @@ int main_serve(int argc, char* argv[]) {
 	if (normal && (!enable_self_loop || weighted) || !enable_self_loop && weighted) {
 		throw invalid_argument("conflicting option combinations");
 	}
+	assert(count || file_output);
 	// let's check the file
 	fs::path input_path(filename);
 	if (!fs::exists(input_path)) {
@@ -136,5 +142,65 @@ int main_serve(int argc, char* argv[]) {
 	if (!input.is_open()) {
 		throw runtime_error(filename + ": Cannot open as read-only");
 	}
-	ios::pos_type size = 0;
+
+	ios::pos_type size = input.tellg();
+	input.seekg(0);
+
+	string raw_input(size, 0);
+	input.read(raw_input.data(), size);
+
+	vector<char*> words;
+	for (int i = 0, las = -1; i < size; ++i) {
+		char& c = raw_input.data()[i];
+		if (isalpha(c)) {
+			if (i != las) words.push_back(&c);
+			las = i + 1;
+			c = tolower(c);
+		}
+		else {
+			c = 0;
+		}
+	}
+
+	if (words.empty()) {
+		throw runtime_error(filename + ": File does not contain words");
+	}
+
+	// now we have all the words, let's have the engine whirring!
+	vector<char*> result(32768, 0);
+
+	int ret_val = engine(
+		words.data(),
+		words.size(),
+		result.data(),
+		head,
+		tail,
+		count,
+		weighted,
+		enable_self_loop,
+		enable_ring);
+
+	ofstream output;
+	ostream &out = file_output ? output : cout;
+	if (file_output) {
+		output.open(output_filename, ios::out | ios::binary | ios::trunc);
+		if (!output.is_open()) {
+			throw runtime_error(output_filename + ": Cannot open for writing");
+		}
+	}
+	
+	if (count) {
+		out << ret_val << endl;
+	}
+
+	for (int i = 0; result[i]; ++i) {
+		out << result[i] << endl;
+	}
+
+	if (file_output) {
+		output.close();
+	}
+
+	// seems working?
+	return 0;
 }
