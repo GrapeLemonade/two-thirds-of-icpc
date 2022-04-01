@@ -165,6 +165,7 @@ int get_max_DAG(char* result[], char head, char tail, bool enable_self_loop, boo
 		}
 	}
 	int x = head ? head - 'a' : (int)(max_element(f, f + 26) - f), len = f[x];
+	if(len == 1) return 0;
 	while(1){
 		if(h[x] != -1) ans.push_back(s[h[x]]);
 		if(g[x] == -1) break;
@@ -228,6 +229,7 @@ int get_max(char* result[], char head, char tail, bool weighted){
 		if(x == -1 || mp[make_tuple(0, 0, i)].first > mp[make_tuple(0, 0, x)].first) x = i;
 	}
 	int len = mp[make_tuple(0, 0, x)].first;
+	if(len == 1) return 0;
 	while(1){
 		int j = mp[make_tuple(val.first, val.second, x)].second;
 		if(j == -1) break;
@@ -259,6 +261,11 @@ int engine(
 	bool weighted = false){
 
 	init_words(words, len);
+	if(type == 3){
+		sort(s.begin(), s.end());
+		s.erase(unique(s.begin(), s.end()), s.end());
+		m = (int)s.size();
+	}
 	get_SCC();
 	if(type < 3) check_loop();
 	if(type == 0) return get_all(result);
