@@ -205,3 +205,100 @@ namespace test_gen_chain_word
 		
 	};
 }
+
+namespace test_gen_chain_char
+{
+
+	void test(char* words[], int len, char* ans[], int ans_len, char head, char tail, bool enable_loop){
+		char** result = (char**)malloc(10000);
+		int out_len = gen_chain_char(words, len, result, head, tail, enable_loop);
+		Assert::AreEqual(ans_len, out_len);
+		for(int i = 0;i < ans_len;i++){
+			if(result != NULL) Assert::AreEqual(strcmp(ans[i], result[i]), 0);
+			else Assert::Fail();
+		}
+	}
+
+	void stress(int n, bool DAG, int len, unsigned int seed, char head, char tail){
+		char** words = generator(n, DAG, len, seed);
+		char** result = (char**)malloc(10000);
+		int out_len = gen_chain_char(words, len, result, head, tail, !DAG);
+		int ans_len = dp(words, len, head, tail, true);
+		if(len <= 8) Assert::AreEqual(ans_len, brute_force(words, len, head, tail, true));
+		int cnt = 0;
+		assert(result != NULL);
+		for(int i = 0;i < out_len;i++) cnt += (int)strlen(result[i]);
+		if(ans_len != cnt){
+			for(int i = 0;i < len;i++) Logger::WriteMessage(words[i]);
+			Logger::WriteMessage("---");
+			for(int i = 0;i < out_len;i++) Logger::WriteMessage(result[i]);
+		}
+		Assert::AreEqual(ans_len, cnt);
+		checker(words, len, result, out_len);
+	}
+
+	unsigned int seed = 998244353;
+
+	unsigned int rnd(){
+		seed ^= seed << 13;
+		seed ^= seed >> 7;
+		seed ^= seed << 17;
+		return seed;
+	}
+
+	TEST_CLASS(test_gen_chain_char){
+	public:
+
+		/*
+		* 对拍，head 和 tail 均无限制
+		*/ 
+		TEST_METHOD(stresses_0_0){
+			for(int len = 1;len <= 18;len++){
+				for(int i = 0;i < 5;i++){
+					stress(n, false, len, i, 0, 0);
+					stress(n, true, len, i, 0, 0);
+				}
+			}
+		}
+
+		/*
+		* 对拍，head 有限制 tail 无限制
+		*/ 
+		TEST_METHOD(stresses_1_0){
+			for(int len = 1;len <= 18;len++){
+				for(int i = 0;i < 5;i++){
+					char head = rnd() % n + 'a';
+					stress(n, false, len, i, head, 0);
+					stress(n, true, len, i, head, 0);
+				}
+			}
+		}
+
+		/*
+		* 对拍，head 无限制 tail 有限制
+		*/ 
+		TEST_METHOD(stresses_0_1){
+			for(int len = 1;len <= 18;len++){
+				for(int i = 0;i < 5;i++){
+					char tail = rnd() % n + 'a';
+					stress(n, false, len, i, 0, tail);
+					stress(n, true, len, i, 0, tail);
+				}
+			}
+		}
+
+		/*
+		* 对拍，head 和 tail 均有限制
+		*/ 
+		TEST_METHOD(stresses_1_1){
+			for(int len = 1;len <= 18;len++){
+				for(int i = 0;i < 5;i++){
+					char head = rnd() % n + 'a', tail = rnd() % n + 'a';
+					stress(n, false, len, i, head, tail);
+					stress(n, true, len, i, head, tail);
+				}
+			}
+		}
+	};
+}
+

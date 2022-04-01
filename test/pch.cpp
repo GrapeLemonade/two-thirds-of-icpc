@@ -68,7 +68,6 @@ int brute_force(char* words[], int len, char head, char tail, bool weighted){
 			if(!tail || words[a[i]][b[a[i]] - 1] == tail) ans = std::max(ans, sum);
 		}
 	}while(std::next_permutation(a, a + len));
-	if(ans == 1) ans = 0;
 	return ans;
 }
 
@@ -81,7 +80,7 @@ int dp(char* words[], int len, char head, char tail, bool weighted){
 	for(int i = 0;i < (1 << len);i++) for(int j = 0;j < len;j++) f[i][j] = (int)-1e9;
 	for(int i = 0;i < len;i++){
 		assert(words[i] != NULL);
-		if(!head || words[i][0] == head) f[1ll << i][i] = 1;
+		if(!head || words[i][0] == head) f[1ll << i][i] = weighted ? b[i] : 1;
 	}
 	for(int i = 0;i < (1 << len);i++) for(int j = 0;j < len;j++) if(i & (1 << j)){
 		assert(words[j] != NULL);
@@ -91,16 +90,16 @@ int dp(char* words[], int len, char head, char tail, bool weighted){
 		}
 	}
 	int ans = 0;
-	for(int i = 0;i < (1 << len);i++) for(int j = 0;j < len;j++){
+	for(int i = 0;i < (1 << len);i++) for(int j = 0;j < len;j++) if(i & (1 << j)){
+		if(i == (1 << j)) continue;
 		assert(words[j] != NULL);
 		if(!tail || words[j][b[j] - 1] == tail) ans = std::max(ans, f[i][j]);
 	}
-	if(ans == 1) ans = 0;
 	return ans;
 }
 
-void checker(char* words[], int len, char* result[], int res_len){
-	for(int i = 0;i < res_len;i++){
+void checker(char* words[], int len, char* result[], int out_len){
+	for(int i = 0;i < out_len;i++){
 		bool tag = false;
 		for(int j = 0;j < len;j++){
 			assert(words != NULL);

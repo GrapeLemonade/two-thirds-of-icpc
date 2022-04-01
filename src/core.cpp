@@ -100,7 +100,7 @@ vector<string> ans;
 void vector_to_result(char* result[]){
 	int siz = 0;
 	for(auto &i : ans) siz += (int)i.length() + 1;
-	char* p = (char*) malloc(siz);
+	char* p = (char*) malloc(siz + 1);
 	for(int i = 0;i < ans.size();i++){
 		result[i] = p;
 		for(auto j : ans[i]){
@@ -164,14 +164,29 @@ int get_max_DAG(char* result[], char head, char tail, bool enable_self_loop, boo
 			}
 		}
 	}
-	int x = head ? head - 'a' : (int)(max_element(f, f + 26) - f), len = f[x];
-	if(len <= 1) return 0;
-	while(1){
-		if(h[x] != -1) ans.push_back(s[h[x]]);
-		if(g[x] == -1) break;
-		ans.push_back(s[g[x]]);
-		x = s[g[x]].back() - 'a';
+	int x = -1, sum = (int)-1e9;
+	for(int i = 0;i < m;i++) if(!head || head == s[i][0]){
+		int u = s[i][0] - 'a', v = s[i].back() - 'a';
+		if(u == v){
+			if(f[u] == (weighted ? (int)s[i].length() : 1)) continue;
+			if(sum < f[u]) sum = f[u], x = i;
+		}else{
+			if(f[v] <= 0) continue;
+			int Sum = f[v] + (weighted ? (int)s[i].length() : 1);
+			if(sum < Sum) sum = Sum, x = i;
+		}
 	}
+	if(x != -1){
+		if(s[x][0] == s[x].back()) x = s[x][0] - 'a';
+		else ans.push_back(s[x]), x = s[x].back() - 'a';
+		while(1){
+			if(h[x] != -1) ans.push_back(s[h[x]]);
+			if(g[x] == -1) break;
+			ans.push_back(s[g[x]]);
+			x = s[g[x]].back() - 'a';
+		}
+	}
+	int len = (int)ans.size();
 	vector_to_result(result);
 	return len;
 }
@@ -220,25 +235,35 @@ int get_max(char* result[], char head, char tail, bool weighted){
 		w[s[i][0] - 'a'][s[i].back() - 'a'].push_back({weighted ? (int)s[i].length() : 1, i});
 		V[s[i][0] - 'a'].push_back(s[i].back() - 'a');
 	}
-	for(int i = 0;i < 26;i++) for(int j = 0;j < 26;j++) sort(w[i][j].begin(), w[i][j].end());
+	for(int i = 0;i < 26;i++) for(int j = 0;j < 26;j++) sort(w[i][j].begin(), w[i][j].end(), greater<pair<int, int> >());
 	for(int i = 0;i < 26;i++) sort(V[i].begin(), V[i].end()), V[i].erase(unique(V[i].begin(), V[i].end()), V[i].end());
 	Tail = tail ? tail - 'a' : -1;
-	int x = -1;
-	for(int i = 0;i < 26;i++) if(!head || head - 'a' == i){
-		dfs_max(i);
-		if(x == -1 || mp[make_tuple(0, 0, i)].first > mp[make_tuple(0, 0, x)].first) x = i;
+	for(int i = 0;i < 26;i++) if(!head || head - 'a' == i) dfs_max(i);
+	int x = -1, sum = (int)-1e9;
+	for(int i = 0;i < m;i++) if(!head || head == s[i][0]){
+		int u = s[i][0] - 'a', v = s[i].back() - 'a';
+		val = {0, 0};
+		if(col[u] == col[v]) modify_val(i);
+		if(mp[make_tuple(val.first, val.second, v)].first <= 0) continue;
+		int Sum = mp[make_tuple(val.first, val.second, v)].first + (weighted ? (int)s[i].length() : 1);
+		if(sum < Sum) sum = Sum, x = i;
 	}
-	int len = mp[make_tuple(0, 0, x)].first;
-	if(len <= 1) return 0;
-	while(1){
-		int j = mp[make_tuple(val.first, val.second, x)].second;
-		if(j == -1) break;
-		ans.push_back(s[w[x][j][pos[x][j]].second]);
-		if(col[x] == col[j]) modify_val(w[x][j][pos[x][j]].second);
-		else val = {0, 0};
-		pos[x][j]++;
-		x = j;
+	val = {0, 0};
+	if(x != -1){
+		ans.push_back(s[x]);
+		if(col[s[x][0] - 'a'] == col[s[x].back() - 'a']) modify_val(x);
+		x = s[x].back() - 'a';
+		while(1){
+			int j = mp[make_tuple(val.first, val.second, x)].second;
+			if(j == -1) break;
+			ans.push_back(s[w[x][j][pos[x][j]].second]);
+			if(col[x] == col[j]) modify_val(w[x][j][pos[x][j]].second);
+			else val = {0, 0};
+			pos[x][j]++;
+			x = j;
+		}
 	}
+	int len = (int)ans.size();
 	vector_to_result(result);
 	return len;
 }
