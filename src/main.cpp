@@ -4,7 +4,7 @@
 #include <utility>
 #include <fstream>
 #include <cassert>
-#include <cctype>
+//#include <cctype>
 #include <vector>
 #include <array>
 #include <set>
@@ -131,7 +131,8 @@ int main_serve(int argc, char* argv[]) {
 		throw invalid_argument("conflicting option combinations");
 	}
 	if (options.empty() || !(count || file_output)) {
-		throw invalid_argument("no option specified");
+		if (!options.empty()) throw invalid_argument("missing -n, -w, -m or -c");
+		else throw invalid_argument("no option specified");
 	}
 	// let's check the file
 	fs::path input_path(filename);
@@ -155,6 +156,12 @@ int main_serve(int argc, char* argv[]) {
 	vector<char*> words;
 	for (int i = 0, las = -1; i < size; ++i) {
 		char& c = raw_input.data()[i];
+		auto isalpha = [] (char c) {
+			return 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z';
+		};
+		auto tolower = [] (char c) {
+			return c | 0x20;
+		};
 		if (isalpha(c)) {
 			if (i != las) words.push_back(&c);
 			las = i + 1;
