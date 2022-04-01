@@ -155,10 +155,12 @@ namespace test_gen_chain_word
 		* 对拍，head 和 tail 均无限制
 		*/ 
 		TEST_METHOD(stresses_0_0){
-			for(int len = 1;len <= 18;len++){
-				for(int i = 0;i < 5;i++){
-					stress(n, false, len, i, 0, 0);
-					stress(n, true, len, i, 0, 0);
+			for(int n = 2;n <= 26;n += 2){
+				for(int len = 1;len <= 19;len += 3){
+					for(int i = 0;i < 5;i++){
+						stress(n, false, len, i, 0, 0);
+						stress(n, true, len, i, 0, 0);
+					}
 				}
 			}
 		}
@@ -167,11 +169,13 @@ namespace test_gen_chain_word
 		* 对拍，head 有限制 tail 无限制
 		*/ 
 		TEST_METHOD(stresses_1_0){
-			for(int len = 1;len <= 18;len++){
-				for(int i = 0;i < 5;i++){
-					char head = rnd() % n + 'a';
-					stress(n, false, len, i, head, 0);
-					stress(n, true, len, i, head, 0);
+			for(int n = 2;n <= 26;n += 2){
+				for(int len = 1;len <= 19;len += 3){
+					for(int i = 0;i < 5;i++){
+						char head = rnd() % n + 'a';
+						stress(n, false, len, i, head, 0);
+						stress(n, true, len, i, head, 0);
+					}
 				}
 			}
 		}
@@ -180,11 +184,13 @@ namespace test_gen_chain_word
 		* 对拍，head 无限制 tail 有限制
 		*/ 
 		TEST_METHOD(stresses_0_1){
-			for(int len = 1;len <= 18;len++){
-				for(int i = 0;i < 5;i++){
-					char tail = rnd() % n + 'a';
-					stress(n, false, len, i, 0, tail);
-					stress(n, true, len, i, 0, tail);
+			for(int n = 2;n <= 26;n += 2){
+				for(int len = 1;len <= 19;len += 3){
+					for(int i = 0;i < 5;i++){
+						char tail = rnd() % n + 'a';
+						stress(n, false, len, i, 0, tail);
+						stress(n, true, len, i, 0, tail);
+					}
 				}
 			}
 		}
@@ -193,11 +199,13 @@ namespace test_gen_chain_word
 		* 对拍，head 和 tail 均有限制
 		*/ 
 		TEST_METHOD(stresses_1_1){
-			for(int len = 1;len <= 18;len++){
-				for(int i = 0;i < 5;i++){
-					char head = rnd() % n + 'a', tail = rnd() % n + 'a';
-					stress(n, false, len, i, head, tail);
-					stress(n, true, len, i, head, tail);
+			for(int n = 2;n <= 26;n += 2){
+				for(int len = 1;len <= 19;len += 3){
+					for(int i = 0;i < 5;i++){
+						char head = rnd() % n + 'a', tail = rnd() % n + 'a';
+						stress(n, false, len, i, head, tail);
+						stress(n, true, len, i, head, tail);
+					}
 				}
 			}
 		}
@@ -228,11 +236,6 @@ namespace test_gen_chain_char
 		int cnt = 0;
 		assert(result != NULL);
 		for(int i = 0;i < out_len;i++) cnt += (int)strlen(result[i]);
-		if(ans_len != cnt){
-			for(int i = 0;i < len;i++) Logger::WriteMessage(words[i]);
-			Logger::WriteMessage("---");
-			for(int i = 0;i < out_len;i++) Logger::WriteMessage(result[i]);
-		}
 		Assert::AreEqual(ans_len, cnt);
 		checker(words, len, result, out_len);
 	}
@@ -253,10 +256,12 @@ namespace test_gen_chain_char
 		* 对拍，head 和 tail 均无限制
 		*/ 
 		TEST_METHOD(stresses_0_0){
-			for(int len = 1;len <= 18;len++){
-				for(int i = 0;i < 5;i++){
-					stress(n, false, len, i, 0, 0);
-					stress(n, true, len, i, 0, 0);
+			for(int n = 2;n <= 26;n += 2){
+				for(int len = 1;len <= 19;len += 3){
+					for(int i = 0;i < 5;i++){
+						stress(n, false, len, i, 0, 0);
+						stress(n, true, len, i, 0, 0);
+					}
 				}
 			}
 		}
@@ -265,11 +270,13 @@ namespace test_gen_chain_char
 		* 对拍，head 有限制 tail 无限制
 		*/ 
 		TEST_METHOD(stresses_1_0){
-			for(int len = 1;len <= 18;len++){
-				for(int i = 0;i < 5;i++){
-					char head = rnd() % n + 'a';
-					stress(n, false, len, i, head, 0);
-					stress(n, true, len, i, head, 0);
+			for(int n = 2;n <= 26;n += 2){
+				for(int len = 1;len <= 19;len += 3){
+					for(int i = 0;i < 5;i++){
+						char head = rnd() % n + 'a';
+						stress(n, false, len, i, head, 0);
+						stress(n, true, len, i, head, 0);
+					}
 				}
 			}
 		}
@@ -278,11 +285,13 @@ namespace test_gen_chain_char
 		* 对拍，head 无限制 tail 有限制
 		*/ 
 		TEST_METHOD(stresses_0_1){
-			for(int len = 1;len <= 18;len++){
-				for(int i = 0;i < 5;i++){
-					char tail = rnd() % n + 'a';
-					stress(n, false, len, i, 0, tail);
-					stress(n, true, len, i, 0, tail);
+			for(int n = 2;n <= 26;n += 2){
+				for(int len = 1;len <= 19;len += 3){
+					for(int i = 0;i < 5;i++){
+						char tail = rnd() % n + 'a';
+						stress(n, false, len, i, 0, tail);
+						stress(n, true, len, i, 0, tail);
+					}
 				}
 			}
 		}
@@ -291,11 +300,13 @@ namespace test_gen_chain_char
 		* 对拍，head 和 tail 均有限制
 		*/ 
 		TEST_METHOD(stresses_1_1){
-			for(int len = 1;len <= 18;len++){
-				for(int i = 0;i < 5;i++){
-					char head = rnd() % n + 'a', tail = rnd() % n + 'a';
-					stress(n, false, len, i, head, tail);
-					stress(n, true, len, i, head, tail);
+			for(int n = 2;n <= 26;n += 2){
+				for(int len = 1;len <= 19;len += 3){
+					for(int i = 0;i < 5;i++){
+						char head = rnd() % n + 'a', tail = rnd() % n + 'a';
+						stress(n, false, len, i, head, tail);
+						stress(n, true, len, i, head, tail);
+					}
 				}
 			}
 		}

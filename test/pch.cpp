@@ -29,8 +29,8 @@ char** generator(int n, bool DAG, int len, unsigned int Seed){
 	char** words = (char**)malloc(len * sizeof(char*));
 	for(int i = 0;i < len;i++){
 		assert(words != NULL);
-		int len = rnd() % 10 + 2;
-		words[i] = (char*)malloc((len + 1) * sizeof(char));
+		int len = rnd() % 10 + 3;
+		words[i] = (char*)malloc((len + 1ll) * sizeof(char));
 		assert(words[i] != NULL);
 		words[i][0] = rnd() % n + 'a';
 		words[i][1] = (char)(i + 'a');

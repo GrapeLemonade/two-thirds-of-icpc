@@ -24,11 +24,11 @@ void init_words(char* words[], int len){
 	m = (int)s.size();
 }
 
-vector<int> v[26];
-int sk[26], top;
-bool ins[26], vis[26];
-int dfn[26], low[26], cnt;
-int col[26], tot;
+vector<int> v[30];
+int sk[30], top;
+bool ins[30], vis[30];
+int dfn[30], low[30], cnt;
+int col[30], tot;
 
 void dfs_SCC(int i){
 	sk[++top] = i, vis[i] = ins[i] = true;
@@ -211,7 +211,7 @@ void dfs_max(int i){
 	if(pos[i][i] < w[i][i].size()){
 		modify_val(w[i][i][pos[i][i]].second), pos[i][i]++;
 		dfs_max(i);
-		ans = mp[make_tuple(val.first, val.second, i)].first + w[i][i][(long long)pos[i][i] - 1].first; 
+		ans = mp[make_tuple(val.first, val.second, i)].first + w[i][i][pos[i][i] - 1ll].first; 
 		id = i;
 		val = Val, pos[i][i]--;
 	}else{
@@ -220,7 +220,7 @@ void dfs_max(int i){
 			else val = {0, 0};
 			pos[i][j]++;
 			dfs_max(j);
-			int sum = mp[make_tuple(val.first, val.second, j)].first + w[i][j][(long long)pos[i][j] - 1].first;
+			int sum = mp[make_tuple(val.first, val.second, j)].first + w[i][j][pos[i][j] - 1ll].first;
 			if(ans < sum) ans = sum, id = j;
 			val = Val, pos[i][j]--;
 		}
@@ -252,7 +252,7 @@ int get_max(char* result[], char head, char tail, bool weighted){
 	val = {0, 0};
 	if(x != -1){
 		ans.push_back(s[x]);
-		if(col[s[x][0] - 'a'] == col[s[x].back() - 'a']) modify_val(x);
+		if(col[s[x][0] - 'a'] == col[s[x].back() - 'a']) modify_val(x), pos[s[x][0] - 'a'][s[x].back() - 'a']++;
 		x = s[x].back() - 'a';
 		while(1){
 			int j = mp[make_tuple(val.first, val.second, x)].second;
