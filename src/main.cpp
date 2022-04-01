@@ -136,5 +136,30 @@ int main_serve(int argc, char* argv[]) {
 	if (!input.is_open()) {
 		throw runtime_error(filename + ": Cannot open as read-only");
 	}
-	ios::pos_type size = 0;
+
+	ios::pos_type size = input.tellg();
+	input.seekg(0);
+
+	string raw_input(size, 0);
+	input.read(raw_input.data(), size);
+
+	vector<char*> words;
+	for (int i = 0, las = -1; i < size; ++i) {
+		char& c = raw_input.data()[i];
+		if (isalpha(c)) {
+			if (i != las) words.push_back(&c);
+			las = i + 1;
+			c = tolower(c);
+		}
+		else {
+			c = 0;
+		}
+	}
+
+	if (words.empty()) {
+		throw runtime_error(filename + ": File does not contain words");
+	}
+
+	// now we have all the words
+
 }
