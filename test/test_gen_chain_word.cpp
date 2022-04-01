@@ -5,9 +5,6 @@
 #include <algorithm>
 #include <cassert>
 
-#pragma warning(disable:6385)
-#pragma warning(disable:6386)
-
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace test_gen_chain_word
@@ -23,119 +20,24 @@ namespace test_gen_chain_word
 		}
 	}
 
+	void stress(int n, bool DAG, int len, unsigned int seed, char head, char tail){
+		char** words = generator(n, DAG, len, seed);
+		char** result = (char**)malloc(10000);
+		int out_len = gen_chain_word(words, len, result, head, tail, !DAG);
+		int ans_len = dp(words, len, head, tail, false);
+		if(len <= 8) Assert::AreEqual(ans_len, brute_force(words, len, head, tail, false));
+		Assert::AreEqual(ans_len, out_len);
+		checker(words, len, result, out_len);
+	}
+
 	unsigned int seed = 998244353;
 
-	unsigned int rand(){
+	unsigned int rnd(){
 		seed ^= seed << 13;
 		seed ^= seed >> 7;
 		seed ^= seed << 17;
 		return seed;
 	}
-
-	char** generator(int n, bool DAG, int len, unsigned int Seed){
-		seed = Seed ^ n ^ len;
-		char** words = (char**)malloc(len * sizeof(char*));
-		for(int i = 0;i < len;i++){
-			assert(words != NULL);
-			words[i] = (char*)malloc(4 * sizeof(char));
-			assert(words[i] != NULL);
-			words[i][0] = (char)(rand() % n + 'a');
-			words[i][1] = (char)(i + 'a');
-			words[i][2] = (char)(rand() % n + 'a');
-			if(DAG && words[i][0] >= words[i][2]){
-				if(words[i][0] == words[i][2]){
-					if(words[i][2] == n - 1 + 'a') words[i][0]--;
-					else words[i][2]++;
-				}else swap(words[i][0], words[i][2]);
-			}
-			words[i][3] = 0;
-		}
-		return words;
-	}
-
-	int brute_force(char* words[], int len, char head, char tail){
-		assert(words != NULL);
-		assert(len <= 10);
-		int a[10] = {0}, b[10] = {0};
-		for(int i = 0;i < len;i++){
-			a[i] = i;
-			b[i] = (int)strlen(words[i]);
-		}
-		int ans = 0;
-		do{
-			assert(words[a[0]] != NULL);
-			if(head && words[a[0]][0] != head) continue;
-			for(int i = 1;i < len;i++){
-				assert(words != NULL);
-				assert(words[a[i - 1]] != NULL);
-				assert(words[a[i]] != NULL);
-				if(words[a[i]][0] != words[a[i - 1]][2]) break;
-				if(!tail || words[a[i]][b[a[i]] - 1] == tail) ans = max(ans, i + 1);
-			}
-		}while(std::next_permutation(a, a + len));
-		if(ans == 1) ans = 0;
-		return ans;
-	}
-
-	int f[1 << 20][20];
-	int dp(char* words[], int len, char head, char tail){
-		assert(words != NULL);
-		assert(len <= 20);
-		int b[20];
-		for(int i = 0;i < len;i++) b[i] = (int)strlen(words[i]);
-		for(int i = 0;i < (1 << len);i++) for(int j = 0;j < len;j++) f[i][j] = (int)-1e9;
-		for(int i = 0;i < len;i++){
-			assert(words[i] != NULL);
-			if(!head || words[i][0] == head) f[1ll << i][i] = 1;
-		}
-		for(int i = 0;i < (1 << len);i++) for(int j = 0;j < len;j++) if(i & (1 << j)){
-			assert(words[j] != NULL);
-			for(int k = 0;k < len;k++) if(!(i & (1 << k))){
-				assert(words[k] != NULL);
-				if(words[j][b[j] - 1] == words[k][0]) f[i | (1ll << k)][k] = max(f[i | (1ll << k)][k], f[i][j] + 1);
-			}
-		}
-		int ans = 0;
-		for(int i = 0;i < (1 << len);i++) for(int j = 0;j < len;j++){
-			assert(words[j] != NULL);
-			if(!tail || words[j][b[j] - 1] == tail) ans = max(ans, f[i][j]);
-		}
-		if(ans == 1) ans = 0;
-		return ans;
-	}
-
-	void checker(char* words[], int len, char* result[], int res_len){
-		for(int i = 0;i < res_len;i++){
-			bool tag = false;
-			for(int j = 0;j < len;j++){
-				assert(words != NULL);
-				assert(result != NULL);
-				if(strcmp(words[j], result[i]) == 0){
-					tag = true;
-					break;
-				}
-			}
-			Assert::AreEqual(tag, true);
-		}
-	}
-
-	void stress(int n, bool DAG, int len, unsigned int seed, char head, char tail){
-		char** words = generator(n, DAG, len, seed);
-		char** result = (char**)malloc(10000);
-		int out_len = gen_chain_word(words, len, result, head, tail, !DAG);
-		int ans_len;
-		if(len <= 8){
-			ans_len = dp(words, len, head, tail);
-			//if(ans_len != brute_force(words, len, head, tail)){
-			//	assert(0);
-			//}
-			Assert::AreEqual(ans_len, brute_force(words, len, head, tail));
-		}else ans_len = dp(words, len, head, tail);
-		Assert::AreEqual(ans_len, out_len);
-		checker(words, len, result, out_len);
-	}
-
-
 
 	TEST_CLASS(test_gen_chain_word){
 	public:
@@ -255,7 +157,6 @@ namespace test_gen_chain_word
 		TEST_METHOD(stresses_0_0){
 			for(int len = 1;len <= 18;len++){
 				for(int i = 0;i < 5;i++){
-					seed = (len << 7) | (i << 13) ^ 123;
 					stress(n, false, len, i, 0, 0);
 					stress(n, true, len, i, 0, 0);
 				}
@@ -268,8 +169,7 @@ namespace test_gen_chain_word
 		TEST_METHOD(stresses_1_0){
 			for(int len = 1;len <= 18;len++){
 				for(int i = 0;i < 5;i++){
-					seed = (len << 7) | (i << 13) ^ 345;
-					char head = rand() % n + 'a';
+					char head = rnd() % n + 'a';
 					stress(n, false, len, i, head, 0);
 					stress(n, true, len, i, head, 0);
 				}
@@ -282,8 +182,7 @@ namespace test_gen_chain_word
 		TEST_METHOD(stresses_0_1){
 			for(int len = 1;len <= 18;len++){
 				for(int i = 0;i < 5;i++){
-					seed = (len << 7) | (i << 13) ^ 567;
-					char tail = rand() % n + 'a';
+					char tail = rnd() % n + 'a';
 					stress(n, false, len, i, 0, tail);
 					stress(n, true, len, i, 0, tail);
 				}
@@ -296,8 +195,7 @@ namespace test_gen_chain_word
 		TEST_METHOD(stresses_1_1){
 			for(int len = 1;len <= 18;len++){
 				for(int i = 0;i < 5;i++){
-					seed = (len << 7) | (i << 13) ^ 789;
-					char head = rand() % n + 'a', tail = rand() % n + 'a';
+					char head = rnd() % n + 'a', tail = rnd() % n + 'a';
 					stress(n, false, len, i, head, tail);
 					stress(n, true, len, i, head, tail);
 				}
