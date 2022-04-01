@@ -7,6 +7,7 @@ int engine(
 	int type,
 	bool weighted);
 
+_declspec(dllexport)
 int engine(
 	char* words[],
 	int len,
