@@ -137,8 +137,9 @@ void dfs_all(int i, bool loop){
 
 int get_all(char* result[]){
 	for(int i = 0;i < 26;i++) dfs_all(i, false);
+	int len = (int)ans.size();
 	vector_to_result(result);
-	return (int)ans.size();
+	return len;
 }
 
 int get_max_DAG(char* result[], char head, char tail, bool enable_self_loop, bool weighted){
