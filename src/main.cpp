@@ -1,6 +1,7 @@
 ﻿#include <filesystem>
 #include <stdexcept>
 #include <iostream>
+#include <fstream>
 #include <cctype>
 #include <set>
 
@@ -8,6 +9,7 @@
 #include "main.h"
 
 using namespace std;
+namespace fs = filesystem;
 
 char* source[0x800000];
 char* ans[0x8000];
@@ -25,6 +27,9 @@ int main(int argc, char* argv[]) {
 	catch (logic_error const& e) {
 		cerr << "WordList: " << e.what() << endl;
 	}
+	catch (runtime_error const& e) {
+		cerr << "WordList: " << e.what() << endl;
+	}
 	return 0;
 }
 
@@ -39,6 +44,7 @@ int main_serve(int argc, char* argv[]) {
 		throw invalid_argument("missing arguments");
 	}
 	set<char> options;
+	string filename = "";
 	for (int _ = 1; _ < argc; ++_) {
 		string arg = argv[_];
 		if (arg.length() == 2
@@ -95,11 +101,15 @@ int main_serve(int argc, char* argv[]) {
 		}
 		else {
 			// this must be filename
-			// TODO: get filename
-
+			if (filename != "") {
+				throw invalid_argument("multiple text files given: \"" + filename + "\" and \"" + arg + "\"");
+			}
+			else {
+				filename = arg;
+			}
 		}
 	}
-	// checks before run
+	// option sanity checks before run
 	if (count && (normal
 		|| !enable_self_loop
 		|| weighted
@@ -111,10 +121,20 @@ int main_serve(int argc, char* argv[]) {
 	if (enable_self_loop && (head || tail || enable_ring)) {
 		throw invalid_argument("cannot combine -m with -h, -t or -r");
 	}
-	if (!count
-		&& !normal
-		&& !enable_ring) {
-		throw invalid_argument("-m conflicts with -c");
+	if (normal && (!enable_self_loop || weighted) || !enable_self_loop && weighted) {
+		throw invalid_argument("conflicting option combinations");
 	}
-
+	// let's check the file
+	fs::path input_path(filename);
+	if (!fs::exists(input_path)) {
+		throw runtime_error(filename + ": No such file");
+	}
+	if (!fs::is_regular_file(input_path)) {
+		throw runtime_error(filename + ": Not a regular file");
+	}
+	ifstream input(filename, ios::in | ios::binary | ios::ate); // seek to end
+	if (!input.is_open()) {
+		throw runtime_error(filename + ": Cannot open as read-only");
+	}
+	ios::pos_type size = 0;
 }
