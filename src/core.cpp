@@ -77,12 +77,12 @@ void check_loop(){
 				int x = i;
 				string S;
 				while(!vis[x]){
-					S += " ";
-					S += s[x];
 					vis[x] = true;
 					for(auto j : v[x]){
 						int to = s[j].back() - 'a';
 						if(col[to] == col[i]){
+							if(!S.empty()) S += " ";
+							S += s[j];
 							x = to;
 							break;
 						}
