@@ -124,13 +124,15 @@ int main_serve(int argc, char* argv[]) {
 		|| enable_ring)) {
 		throw invalid_argument("cannot combine -n with other options");
 	}
-	if (enable_self_loop && (head || tail || enable_ring)) {
+	if (!enable_self_loop && (head || tail || enable_ring)) {
 		throw invalid_argument("cannot combine -m with -h, -t or -r");
 	}
 	if (normal && (!enable_self_loop || weighted) || !enable_self_loop && weighted) {
 		throw invalid_argument("conflicting option combinations");
 	}
-	assert(count || file_output);
+	if (options.empty() || !(count || file_output)) {
+		throw invalid_argument("no option specified");
+	}
 	// let's check the file
 	fs::path input_path(filename);
 	if (!fs::exists(input_path)) {
