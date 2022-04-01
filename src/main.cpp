@@ -5,6 +5,7 @@
 #include <fstream>
 #include <cassert>
 #include <cctype>
+#include <vector>
 #include <array>
 #include <set>
 
@@ -171,7 +172,7 @@ int main_serve(int argc, char* argv[]) {
 
 	int ret_val = engine(
 		words.data(),
-		words.size(),
+		(int) words.size(),
 		result.data(),
 		head,
 		tail,
