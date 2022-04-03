@@ -1,3 +1,9 @@
+#ifdef CORE
+#define EXPOSED_FUNCTION _declspec(dllexport)
+#else
+#define EXPOSED_FUNCTION _declspec(dllimport)
+#endif
+
 int engine(
 	const char* words[],
 	int len,
@@ -7,7 +13,7 @@ int engine(
 	int type,
 	bool weighted);
 
-_declspec(dllexport)
+EXPOSED_FUNCTION
 int engine(
 	const char* words[],
 	int len,
@@ -19,14 +25,17 @@ int engine(
 	bool enable_self_loop,
 	bool enable_ring);
 
-_declspec(dllexport)
+EXPOSED_FUNCTION
+const char* gui_engine(const char* input, int type, char head, char tail, bool weighted);
+
+EXPOSED_FUNCTION
 int gen_chain_word(const char* words[], int len, char* result[], char head, char tail, bool enable_loop);
 
-_declspec(dllexport)
+EXPOSED_FUNCTION
 int gen_chains_all(const char* words[], int len, char* result[]);
 
-_declspec(dllexport)
+EXPOSED_FUNCTION
 int gen_chain_word_unique(const char* words[], int len, char* result[]);
 
-_declspec(dllexport)
+EXPOSED_FUNCTION
 int gen_chain_char(const char* words[], int len, char* result[], char head, char tail, bool enable_loop);

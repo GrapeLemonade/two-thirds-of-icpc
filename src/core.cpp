@@ -1,6 +1,8 @@
+#define CORE
 #include "core.h"
 #include <vector>
 #include <string>
+#include <sstream>
 #include <stdexcept>
 #include <algorithm>
 #include <cassert>
@@ -104,12 +106,10 @@ void vector_to_result(char* result[]){
 	for(int i = 0;i < ans.size();i++){
 		result[i] = p;
 		for(auto j : ans[i]){
-			assert(p);
-			*p = j;
+			if (p != nullptr) *p = j;
 			p++;
 		}
-		assert(p);
-		*p = 0;
+		if (p != nullptr) *p = 0;
 		p++;
 	}
 	ans.clear();
@@ -316,6 +316,45 @@ int engine(
 	else if (enable_self_loop) type = 1;
 	else type = 2;
 	return engine(words, len, result, head, tail, type, weighted);
+}
+
+const char* gui_engine(const char* input, int type, char head, char tail, bool weighted) {
+	string input_copy(input);
+	vector<const char*> words;
+	for (int i = 0, las = -1, size = (int) strlen(input); i < size; ++i) {
+		char& c = input_copy.data()[i];
+		auto isalpha = [](char c) {
+			return 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z';
+		};
+		auto tolower = [](char c) {
+			return c | 0x20;
+		};
+		if (isalpha(c)) {
+			if (i != las) words.push_back(&c);
+			las = i + 1;
+			c = tolower(c);
+		}
+		else {
+			c = 0;
+		}
+	}
+	vector<char*> temp(32768, nullptr);
+	int ret_val = engine(
+		words.data(),
+		(int) words.size(),
+		temp.data(),
+		head,
+		tail,
+		type,
+		weighted);
+
+	stringstream ss(type == 0 ? to_string(ret_val) + "\n" : "");
+
+	for (int i = 0; i < ret_val; ++i) {
+		ss << temp[i] << endl;
+	}
+
+	return ss.str().data();
 }
 
 int gen_chain_word(const char* words[], int len, char* result[], char head, char tail, bool enable_loop){
