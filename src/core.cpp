@@ -339,16 +339,25 @@ const char* gui_engine(const char* input, int type, char head, char tail, bool w
 		}
 	}
 	vector<char*> temp(32768, nullptr);
-	int ret_val = engine(
-		words.data(),
-		(int) words.size(),
-		temp.data(),
-		head,
-		tail,
-		type,
-		weighted);
+
+	int ret_val = 0;
 
 	stringstream ss;
+
+	try {
+		ret_val = engine(
+			words.data(),
+			(int) words.size(),
+			temp.data(),
+			head,
+			tail,
+			type,
+			weighted);
+	}
+	catch (logic_error e) {
+		ss << "WordList-GUI: " << e.what() << endl;
+		return ss.str().data();
+	}
 
 	if (type == 0) {
 		ss << ret_val << endl;
