@@ -13,7 +13,7 @@
 #include "main.h"
 
 using namespace std;
-namespace fs = filesystem;
+using namespace std::filesystem;
 
 const string allowed_options = "chmnrtw";
 const string output_filename = "solution.txt";
@@ -135,11 +135,11 @@ int main_serve(int argc, char* argv[]) {
 		else throw invalid_argument("no option specified");
 	}
 	// let's check the file
-	fs::path input_path(filename);
-	if (!fs::exists(input_path)) {
+	path input_path(filename);
+	if (!exists(input_path)) {
 		throw runtime_error(filename + ": No such file");
 	}
-	if (!fs::is_regular_file(input_path)) {
+	if (!is_regular_file(input_path)) {
 		throw runtime_error(filename + ": Not a regular file");
 	}
 	ifstream input(filename, ios::in | ios::binary | ios::ate); // seek to end
