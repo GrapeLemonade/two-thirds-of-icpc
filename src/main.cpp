@@ -203,7 +203,7 @@ int main_serve(int argc, char* argv[]) {
 		out << ret_val << endl;
 	}
 
-	for (int i = 0; result[i]; ++i) {
+	for (int i = 0; i < ret_val; ++i) {
 		out << result[i] << endl;
 	}
 
