@@ -153,7 +153,7 @@ int main_serve(int argc, char* argv[]) {
 	string raw_input(size, 0);
 	input.read(raw_input.data(), size);
 
-	vector<char*> words;
+	vector<const char*> words;
 	for (int i = 0, las = -1; i < size; ++i) {
 		char& c = raw_input.data()[i];
 		auto isalpha = [] (char c) {

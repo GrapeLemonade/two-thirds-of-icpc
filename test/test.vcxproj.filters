@@ -15,10 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test_gen_chain_word.cpp">
+    <ClCompile Include="test_core.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="test_main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
