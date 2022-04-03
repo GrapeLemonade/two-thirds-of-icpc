@@ -14,7 +14,7 @@ const int n = 26;
 int m;
 vector<string> s;
 
-void init_words(char* words[], int len){
+void init_words(const char* words[], int len){
 	s.clear();
 	for(int i = 0;i < len;i++){
 		string S = words[i];
@@ -278,7 +278,7 @@ int get_max(char* result[], char head, char tail, bool weighted){
 */
 
 int engine(
-	char* words[],
+	const char* words[],
 	int len,
 	char* result[],
 	char head,
@@ -300,7 +300,7 @@ int engine(
 }
 
 int engine(
-	char* words[],
+	const char* words[],
 	int len,
 	char* result[],
 	char head,
@@ -318,18 +318,18 @@ int engine(
 	return engine(words, len, result, head, tail, type, weighted);
 }
 
-int gen_chain_word(char* words[], int len, char* result[], char head, char tail, bool enable_loop){
+int gen_chain_word(const char* words[], int len, char* result[], char head, char tail, bool enable_loop){
 	return engine(words, len, result, head, tail, enable_loop ? 3 : 1);
 }
 
-int gen_chains_all(char* words[], int len, char* result[]){
+int gen_chains_all(const char* words[], int len, char* result[]){
 	return engine(words, len, result, 0, 0, 0);
 }
 
-int gen_chain_word_unique(char* words[], int len, char* result[]){
+int gen_chain_word_unique(const char* words[], int len, char* result[]){
 	return engine(words, len, result, 0, 0, 2);
 }
 
-int gen_chain_char(char* words[], int len, char* result[], char head, char tail, bool enable_loop){
+int gen_chain_char(const char* words[], int len, char* result[], char head, char tail, bool enable_loop){
 	return engine(words, len, result, head, tail, enable_loop ? 3 : 1, true);
 }

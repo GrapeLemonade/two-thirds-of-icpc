@@ -9,12 +9,12 @@
 
 // 添加要在此处预编译的标头
 
-char** generator(int n, bool DAG, int len, unsigned int Seed);
+const char** generator(int n, bool DAG, int len, unsigned int Seed);
 
-int brute_force(char* words[], int len, char head, char tail, bool weighted);
+int brute_force(const char* words[], int len, char head, char tail, bool weighted);
 
-int dp(char* words[], int len, char head, char tail, bool weighted);
+int dp(const char* words[], int len, char head, char tail, bool weighted);
 
-void checker(char* words[], int len, char* result[], int res_len);
+void checker(const char* words[], int len, char* result[], int res_len);
 
 #endif //PCH_H
