@@ -348,7 +348,11 @@ const char* gui_engine(const char* input, int type, char head, char tail, bool w
 		type,
 		weighted);
 
-	stringstream ss(type == 0 ? to_string(ret_val) + "\n" : "");
+	stringstream ss;
+
+	if (type == 0) {
+		ss << ret_val << endl;
+	}
 
 	for (int i = 0; i < ret_val; ++i) {
 		ss << temp[i] << endl;

@@ -1,7 +1,7 @@
 #ifdef CORE
-#define EXPOSED_FUNCTION _declspec(dllexport)
+#define EXPOSED_FUNCTION extern "C" _declspec(dllexport)
 #else
-#define EXPOSED_FUNCTION _declspec(dllimport)
+#define EXPOSED_FUNCTION extern "C" _declspec(dllimport)
 #endif
 
 int engine(
