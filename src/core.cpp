@@ -371,17 +371,37 @@ const char* gui_engine(const char* input, int type, char head, char tail, bool w
 }
 
 int gen_chain_word(const char* words[], int len, char* result[], char head, char tail, bool enable_loop){
-	return engine(words, len, result, head, tail, enable_loop ? 3 : 1);
+	try {
+		return engine(words, len, result, head, tail, enable_loop ? 3 : 1);
+	}
+	catch (logic_error) {
+		return -1;
+	}
 }
 
 int gen_chains_all(const char* words[], int len, char* result[]){
-	return engine(words, len, result, 0, 0, 0);
+	try {
+		return engine(words, len, result, 0, 0, 0);
+	}
+	catch (logic_error) {
+		return -1;
+	}
 }
 
 int gen_chain_word_unique(const char* words[], int len, char* result[]){
-	return engine(words, len, result, 0, 0, 2);
+	try {
+		return engine(words, len, result, 0, 0, 2);
+	}
+	catch (logic_error) {
+		return -1;
+	}
 }
 
 int gen_chain_char(const char* words[], int len, char* result[], char head, char tail, bool enable_loop){
-	return engine(words, len, result, head, tail, enable_loop ? 3 : 1, true);
+	try {
+		return engine(words, len, result, head, tail, enable_loop ? 3 : 1, true);
+	}
+	catch (logic_error) {
+		return -1;
+	}
 }
