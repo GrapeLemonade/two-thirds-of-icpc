@@ -1,0 +1,3 @@
+[submodule "two-thirds-of-icpc-gui"]
+	path = two-thirds-of-icpc-gui
+	url = git@github.com:GrapeLemonade/two-thirds-of-icpc-gui.git
