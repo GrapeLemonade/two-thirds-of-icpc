@@ -102,7 +102,7 @@ vector<string> ans;
 void vector_to_result(char* result[]){
 	int siz = 0;
 	for(auto &i : ans) siz += (int)i.length() + 1;
-	char* p = (char*) malloc(siz + 1);
+	char* p = (char*) malloc((long long)siz + 1);
 	for(int i = 0;i < ans.size();i++){
 		result[i] = p;
 		for(auto j : ans[i]){
