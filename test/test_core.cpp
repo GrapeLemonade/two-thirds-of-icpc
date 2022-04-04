@@ -226,14 +226,18 @@ namespace test_gen_chain_char_correctness{
 	void stress(int n, bool DAG, int len, unsigned int seed, char head, char tail){
 		const char** words = generator(n, DAG, len, seed);
 		char** result = (char**)malloc(10000);
-		int out_len = gen_chain_char(words, len, result, head, tail, !DAG);
-		int ans_len = dp(words, len, head, tail, true);
-		if(len <= 8) Assert::AreEqual(ans_len, brute_force(words, len, head, tail, true));
-		int cnt = 0;
-		assert(result != NULL);
-		for(int i = 0;i < out_len;i++) cnt += (int)strlen(result[i]);
-		Assert::AreEqual(ans_len, cnt);
-		checker(words, len, result, out_len);
+		if (result) {
+			int out_len = gen_chain_char(words, len, result, head, tail, !DAG);
+			int ans_len = dp(words, len, head, tail, true);
+			if(len <= 8) Assert::AreEqual(ans_len, brute_force(words, len, head, tail, true));
+			int cnt = 0;
+			for(int i = 0;i < out_len;i++) cnt += (int) strlen(result[i]);
+			Assert::AreEqual(ans_len, cnt);
+			checker(words, len, result, out_len);
+		}
+		else {
+			Assert::Fail();
+		}
 	}
 
 	unsigned int seed = 998244353;

@@ -102,7 +102,7 @@ vector<string> ans;
 void vector_to_result(char* result[]){
 	int siz = 0;
 	for(auto &i : ans) siz += (int)i.length() + 1;
-	char* p = (char*) malloc((long long)siz + 1);
+	char* p = (char*) malloc((size_t) siz + 1);
 	for(int i = 0;i < ans.size();i++){
 		result[i] = p;
 		for(auto j : ans[i]){
@@ -143,7 +143,7 @@ int get_all(char* result[]){
 }
 
 int get_max_DAG(char* result[], char head, char tail, bool enable_self_loop, bool weighted){
-	int a[26], f[26], g[26], h[26];
+	int a[26] = {}, f[26] = {}, g[26] = {}, h[26] = {};
 	for(int i = 0;i < 26;i++) a[col[i] - 1] = i;
 	for(int i = 0;i < 26;i++){
 		int x = a[i];
