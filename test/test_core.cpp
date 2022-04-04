@@ -14,8 +14,7 @@ namespace test_gen_chain_word_correctness{
 		int out_len = gen_chain_word(words, len, result, head, tail, enable_loop);
 		Assert::AreEqual(ans_len, out_len);
 		for(int i = 0;i < ans_len;i++){
-			if(result != NULL) Assert::AreEqual(strcmp(ans[i], result[i]), 0);
-			else Assert::Fail();
+			if(result != nullptr) Assert::AreEqual(strcmp(ans[i], result[i]), 0);
 		}
 	}
 
@@ -220,8 +219,7 @@ namespace test_gen_chain_char_correctness{
 		int out_len = gen_chain_char(words, len, result, head, tail, enable_loop);
 		Assert::AreEqual(ans_len, out_len);
 		for(int i = 0;i < ans_len;i++){
-			if(result != NULL) Assert::AreEqual(strcmp(ans[i], result[i]), 0);
-			else Assert::Fail();
+			if(result != nullptr) Assert::AreEqual(strcmp(ans[i], result[i]), 0);
 		}
 	}
 
@@ -327,8 +325,7 @@ namespace test_gen_chains_all_correctness{
 		int out_len = gen_chains_all(words, len, result);
 		Assert::AreEqual(ans_len, out_len);
 		for(int i = 0;i < ans_len;i++){
-			if(result != NULL) Assert::AreEqual(strcmp(ans[i], result[i]), 0);
-			else Assert::Fail();
+			if(result != nullptr) Assert::AreEqual(strcmp(ans[i], result[i]), 0);
 		}
 	}
 
@@ -354,8 +351,7 @@ namespace test_gen_chain_word_unique_correctness{
 		int out_len = gen_chain_word_unique(words, len, result);
 		Assert::AreEqual(ans_len, out_len);
 		for(int i = 0;i < ans_len;i++){
-			if(result != NULL) Assert::AreEqual(strcmp(ans[i], result[i]), 0);
-			else Assert::Fail();
+			if(result != nullptr) Assert::AreEqual(strcmp(ans[i], result[i]), 0);
 		}
 	}
 
@@ -369,6 +365,38 @@ namespace test_gen_chain_word_unique_correctness{
 			const char* words[] = {"algebra", "apple", "zoo", "elephant", "under", "fox", "dog", "moon", "leaf", "trick", "pseudopseudohypoparathyroidism"};
 			const char* ans[] = {"apple", "elephant", "trick"};
 			test(words, 11, ans, 3);
+		}
+
+	};
+}
+
+namespace test_core_exception {
+
+	TEST_CLASS(test_core_exception){
+	public:
+
+		/*
+		* 多于一个的自环
+		*/ 
+		TEST_METHOD(more_than_one_self_loop){
+			Assert::ExpectException<std::logic_error>([](){
+				const char* words[] = {"aa", "aa"};
+				char** result = (char**)malloc(10000);
+				gen_chain_word(words, 2, result, 0, 0, false);
+			});
+			
+		}
+
+		/*
+		* 非 DAG
+		*/ 
+		TEST_METHOD(not_dag){
+			Assert::ExpectException<std::logic_error>([](){
+				const char* words[] = {"ab", "ba"};
+				char** result = (char**)malloc(10000);
+				gen_chain_word(words, 2, result, 0, 0, false);
+				});
+
 		}
 
 	};

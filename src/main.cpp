@@ -20,7 +20,7 @@ const string output_filename = "solution.txt";
 
 int main(int argc, char* argv[]) {
 	try {
-		main_serve(argc, argv);
+		main_serve(argc, (const char**) argv);
 	}
 	catch (invalid_argument const& e) {
 		cerr << "WordList: " << e.what() << endl;
@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-int main_serve(int argc, char* argv[]) {
+int main_serve(int argc, const char* argv[]) {
 	bool count = false;
 	bool normal = false;
 	bool weighted = false;

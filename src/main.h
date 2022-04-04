@@ -1,2 +1,2 @@
 #pragma once
-int main_serve(int argc, char* argv[]);
+int main_serve(int argc, const char* argv[]);
