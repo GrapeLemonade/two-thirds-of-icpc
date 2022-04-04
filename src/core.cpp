@@ -356,7 +356,7 @@ const char* gui_engine(const char* input, int type, char head, char tail, bool w
 	}
 	catch (logic_error e) {
 		ss << "WordList-GUI: " << e.what() << endl;
-		return ss.str().data();
+		return (new string(ss.str()))->data();
 	}
 
 	if (type == 0) {
@@ -367,7 +367,7 @@ const char* gui_engine(const char* input, int type, char head, char tail, bool w
 		ss << temp[i] << endl;
 	}
 
-	return ss.str().data();
+	return (new string(ss.str()))->data();
 }
 
 int gen_chain_word(const char* words[], int len, char* result[], char head, char tail, bool enable_loop){
