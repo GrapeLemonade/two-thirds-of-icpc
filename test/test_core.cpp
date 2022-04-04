@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CppUnitTest.h"
-#include "../src/core.cpp"
+#include "../src/core.h"
 #include <vector>
 #include <algorithm>
 #include <cassert>
