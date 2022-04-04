@@ -379,11 +379,9 @@ namespace test_core_exception {
 		* 多于一个的自环
 		*/ 
 		TEST_METHOD(more_than_one_self_loop){
-			Assert::ExpectException<std::logic_error>([](){
-				const char* words[] = {"aa", "aa"};
-				char** result = (char**)malloc(10000);
-				gen_chain_word(words, 2, result, 0, 0, false);
-			});
+			const char* words[] = {"aa", "aa"};
+			char** result = (char**)malloc(10000);
+			Assert::AreEqual(-1, gen_chain_word(words, 2, result, 0, 0, false));
 			
 		}
 
@@ -391,11 +389,9 @@ namespace test_core_exception {
 		* 非 DAG
 		*/ 
 		TEST_METHOD(not_dag){
-			Assert::ExpectException<std::logic_error>([](){
-				const char* words[] = {"ab", "ba"};
-				char** result = (char**)malloc(10000);
-				gen_chain_word(words, 2, result, 0, 0, false);
-				});
+			const char* words[] = {"ab", "ba"};
+			char** result = (char**)malloc(10000);
+			Assert::AreEqual(-1, gen_chain_word(words, 2, result, 0, 0, false));
 
 		}
 

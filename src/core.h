@@ -4,15 +4,6 @@
 #define EXPOSED_FUNCTION extern "C" _declspec(dllimport)
 #endif
 
-int engine(
-	const char* words[],
-	int len,
-	char* result[],
-	char head,
-	char tail,
-	int type,
-	bool weighted);
-
 EXPOSED_FUNCTION
 int engine(
 	const char* words[],
