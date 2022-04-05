@@ -471,12 +471,12 @@ namespace test_core_exception {
 		*/ 
 		TEST_METHOD(more_than_one_self_loop){
 			try{
-				const char* words[] = {"aa", "aa"};
+				const char* words[] = {"aa", "aba"};
 				char** result = (char**)malloc(10000);
 				engine(words, 2, result, 0, 0, true, false, true, false);
 			}catch(std::logic_error const& e){
-				Logger::WriteMessage(e.what());
-				Assert::AreEqual(0, strcmp("Word ring detected: aa aa", e.what()));
+
+				Assert::AreEqual(0, strcmp("Word ring detected: aa aba", e.what()));
 				return;
 			}
 			Assert::Fail();
@@ -546,9 +546,9 @@ namespace test_core_exception {
 		* 测试 gui_engine 异常
 		*/ 
 		TEST_METHOD(test_gui_engine_exception){
-			const char* words = "aa aa";
+			const char* words = "aa aba";
 			const char* result = gui_engine(words, 0, 0, 0, false);
-			const char* ans = "WordList-GUI: Word ring detected: aa aa\n";
+			const char* ans = "WordList-GUI: Word ring detected: aa aba\n";
 			Assert::AreEqual(0, strcmp(result, ans));
 		}
 
