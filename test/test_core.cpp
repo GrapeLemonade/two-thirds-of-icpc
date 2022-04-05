@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <cassert>
+#include <stdexcept>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -460,36 +461,64 @@ namespace test_core_exception {
 		* 多于一个的自环，两个 aa
 		*/ 
 		TEST_METHOD(more_than_one_self_loop){
-			const char* words[] = {"aa", "aa"};
-			char** result = (char**)malloc(10000);
-			Assert::AreEqual(-1, gen_chain_word(words, 2, result, 0, 0, false));
+			try{
+				const char* words[] = {"aa", "aa"};
+				char** result = (char**)malloc(10000);
+				engine(words, 2, result, 0, 0, true, false, true, false);
+			}catch(std::logic_error const& e){
+				Logger::WriteMessage(e.what());
+				Assert::AreEqual(0, strcmp("Word ring detected: aa aa", e.what()));
+				return;
+			}
+			Assert::Fail();
 		}
 
 		/*
 		* 非 DAG，两个点的环
 		*/ 
 		TEST_METHOD(not_dag_two_vectices){
-			const char* words[] = {"ab", "ba"};
-			char** result = (char**)malloc(10000);
-			Assert::AreEqual(-1, gen_chain_word(words, 2, result, 0, 0, false));
+			try{
+				const char* words[] = {"ab", "ba"};
+				char** result = (char**)malloc(10000);
+				engine(words, 2, result, 0, 0, true, false, true, false);
+			}catch(std::logic_error const& e){
+				Logger::WriteMessage(e.what());
+				Assert::AreEqual(0, strcmp("Word ring detected: ba ab", e.what()));
+				return;
+			}
+			Assert::Fail();
 		}
 
 		/*
 		* 非 DAG，三个点的环
 		*/ 
 		TEST_METHOD(not_dag_three_vectices){
-			const char* words[] = {"ab", "bc", "ca"};
-			char** result = (char**)malloc(10000);
-			Assert::AreEqual(-1, gen_chain_word(words, 3, result, 0, 0, false));
+			try{
+				const char* words[] = {"ab", "bc", "ca"};
+				char** result = (char**)malloc(10000);
+				engine(words, 3, result, 0, 0, true, false, true, false);
+			}catch(std::logic_error const& e){
+				Logger::WriteMessage(e.what());
+				Assert::AreEqual(0, strcmp("Word ring detected: bc ca ab", e.what()));
+				return;
+			}
+			Assert::Fail();
 		}
 
 		/*
 		* 单词链超过 20000
 		*/ 
 		TEST_METHOD(too_many_word_chains){
-			const char* words[] = {"ab", "abb", "abbb", "bc", "bcc", "bccc", "cd", "cdd", "cddd", "de", "dee", "deee", "ef", "eff", "efff", "fg", "fgg", "fggg", "gh", "ghh", "ghhh", "hi", "hii", "hiii", "ij", "ijj", "ijjj", "jk", "jkk", "jkkk"};
-			char** result = (char**)malloc(10000);
-			Assert::AreEqual(-1, gen_chains_all(words, 30, result));
+			try{
+				const char* words[] = {"ab", "abb", "abbb", "bc", "bcc", "bccc", "cd", "cdd", "cddd", "de", "dee", "deee", "ef", "eff", "efff", "fg", "fgg", "fggg", "gh", "ghh", "ghhh", "hi", "hii", "hiii", "ij", "ijj", "ijjj", "jk", "jkk", "jkkk"};
+				char** result = (char**)malloc(10000);
+				engine(words, 30, result, 0, 0, true, false, true, false);
+			}catch(std::logic_error const& e){
+				Logger::WriteMessage(e.what());
+				Assert::AreEqual(0, strcmp("Too many word chains!", e.what()));
+				return;
+			}
+			Assert::Fail();
 		}
 
 		/*
