@@ -153,42 +153,21 @@ int main_serve(int argc, const char* argv[]) {
 	string raw_input(size, 0);
 	input.read(raw_input.data(), size);
 
-	vector<const char*> words;
-	for (int i = 0, las = -1; i < size; ++i) {
-		char& c = raw_input.data()[i];
-		auto isalpha = [] (char c) {
-			return 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z';
-		};
-		auto tolower = [] (char c) {
-			return c | 0x20;
-		};
-		if (isalpha(c)) {
-			if (i != las) words.push_back(&c);
-			las = i + 1;
-			c = tolower(c);
-		}
-		else {
-			c = 0;
-		}
-	}
+	int type = 0;
+	if (count) type = 0;
+	else if (enable_ring) type = 3;
+	else if (enable_self_loop) type = 1;
+	else type = 2;
 
-	if (words.empty()) {
-		throw runtime_error(filename + ": File does not contain words");
-	}
-
-	// now we have all the words, let's have the engine whirring!
+	// let's have the engine directly whirring!
 	vector<char*> result(32768, 0);
 
-	int ret_val = engine(
-		words.data(),
-		(int) words.size(),
-		result.data(),
+	string ret(gui_engine(
+		raw_input.data(),
+		type,
 		head,
 		tail,
-		count,
-		weighted,
-		enable_self_loop,
-		enable_ring);
+		weighted));
 
 	ofstream output;
 	ostream &out = file_output ? output : cout;
@@ -199,13 +178,7 @@ int main_serve(int argc, const char* argv[]) {
 		}
 	}
 	
-	if (count) {
-		out << ret_val << endl;
-	}
-
-	for (int i = 0; i < ret_val; ++i) {
-		out << result[i] << endl;
-	}
+	out << ret << endl;
 
 	if (file_output) {
 		output.close();
