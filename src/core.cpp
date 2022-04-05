@@ -361,6 +361,10 @@ const char* gui_engine(const char* input, int type, char head, char tail, bool w
 	stringstream ss;
 
 	try {
+		if (words.empty()) {
+			throw logic_error("input text does not contain words");
+		}
+
 		ret_val = engine(
 			words.data(),
 			(int) words.size(),
@@ -381,6 +385,10 @@ const char* gui_engine(const char* input, int type, char head, char tail, bool w
 
 	for (int i = 0; i < ret_val; ++i) {
 		ss << temp[i] << endl;
+	}
+
+	if (ss.str().size() == 0) {
+		return (new string("WordList-GUI: no solution exists"))->data();
 	}
 
 	return (new string(ss.str()))->data();
