@@ -363,14 +363,91 @@ namespace test_gen_chain_word_unique_correctness{
 	public:
 
 		/*
-		* -w 样例
+		* -m 样例
 		*/ 
-		TEST_METHOD(example_w){
+		TEST_METHOD(example_m){
 			const char* words[] = {"algebra", "apple", "zoo", "elephant", "under", "fox", "dog", "moon", "leaf", "trick", "pseudopseudohypoparathyroidism"};
 			const char* ans[] = {"apple", "elephant", "trick"};
 			test(words, 11, ans, 3);
 		}
 
+	};
+}
+
+namespace test_gui_engine {
+
+	TEST_CLASS(test_gui_engine){
+	public:
+
+		/*
+		* -n 样例
+		*/ 
+		TEST_METHOD(example_n){
+			const char* words = "woo oom moon noox";
+			const char* result = gui_engine(words, 0, 0, 0, false);
+			const char* ans = "6\nmoon noox\noom moon\noom moon noox\nwoo oom\nwoo oom moon\nwoo oom moon noox\n";
+			Assert::AreEqual(0, strcmp(result, ans));
+		}
+
+		/*
+		* -m 样例
+		*/ 
+		TEST_METHOD(example_m){
+			const char* words = "algebra apple zoo elephant under fox dog moon leaf trick pseudopseudohypoparathyroidism";
+			const char* result = gui_engine(words, 2, 0, 0, false);
+			const char* ans = "apple\nelephant\ntrick\n";
+			Assert::AreEqual(0, strcmp(result, ans));
+		}
+
+		/*
+		* -w 样例
+		*/ 
+		TEST_METHOD(example_w){
+			const char* words = "algebra apple zoo elephant under fox dog moon leaf trick pseudopseudohypoparathyroidism";
+			const char* result = gui_engine(words, 1, 0, 0, false);
+			const char* ans = "algebra\napple\nelephant\ntrick\n";
+			Assert::AreEqual(0, strcmp(result, ans));
+		}
+
+		/*
+		* -h 样例
+		*/ 
+		TEST_METHOD(example_h){
+			const char* words = "algebra apple zoo elephant under fox dog moon leaf trick pseudopseudohypoparathyroidism";
+			const char* result = gui_engine(words, 1, 'e', 0, false);
+			const char* ans = "elephant\ntrick\n";
+			Assert::AreEqual(0, strcmp(result, ans));
+		}
+
+		/*
+		* -t 样例
+		*/ 
+		TEST_METHOD(example_t){
+			const char* words = "algebra apple zoo elephant under fox dog moon leaf trick pseudopseudohypoparathyroidism";
+			const char* result = gui_engine(words, 1, 0, 't', false);
+			const char* ans = "algebra\napple\nelephant\n";
+			Assert::AreEqual(0, strcmp(result, ans));
+		}
+
+		/*
+		* -c 样例
+		*/ 
+		TEST_METHOD(example_c){
+			const char* words = "algebra apple zoo elephant under fox dog moon leaf trick pseudopseudohypoparathyroidism";
+			const char* result = gui_engine(words, 1, 0, 0, true);
+			const char* ans = "pseudopseudohypoparathyroidism\nmoon\n";
+			Assert::AreEqual(0, strcmp(result, ans));
+		}
+
+		/*
+		* -r 样例
+		*/ 
+		TEST_METHOD(example_r){
+			const char* words = "element heaven table teach talk";
+			const char* result = gui_engine(words, 3, 0, 0, true);
+			const char* ans = "table\nelement\nteach\nheaven\n";
+			Assert::AreEqual(0, strcmp(result, ans));
+		}
 	};
 }
 
@@ -380,23 +457,52 @@ namespace test_core_exception {
 	public:
 
 		/*
-		* 多于一个的自环
+		* 多于一个的自环，两个 aa
 		*/ 
 		TEST_METHOD(more_than_one_self_loop){
 			const char* words[] = {"aa", "aa"};
 			char** result = (char**)malloc(10000);
 			Assert::AreEqual(-1, gen_chain_word(words, 2, result, 0, 0, false));
-			
 		}
 
 		/*
-		* 非 DAG
+		* 非 DAG，两个点的环
 		*/ 
-		TEST_METHOD(not_dag){
+		TEST_METHOD(not_dag_two_vectices){
 			const char* words[] = {"ab", "ba"};
 			char** result = (char**)malloc(10000);
 			Assert::AreEqual(-1, gen_chain_word(words, 2, result, 0, 0, false));
+		}
 
+		/*
+		* 非 DAG，三个点的环
+		*/ 
+		TEST_METHOD(not_dag_three_vectices){
+			const char* words[] = {"ab", "bc", "ca"};
+			char** result = (char**)malloc(10000);
+			Assert::AreEqual(-1, gen_chain_word(words, 3, result, 0, 0, false));
+		}
+
+		/*
+		* 测试每个接口的异常
+		*/ 
+		TEST_METHOD(four_interface_exception){
+			const char* words[] = {"ab", "bc", "ca"};
+			char** result = (char**)malloc(10000);
+			Assert::AreEqual(-1, gen_chain_word(words, 3, result, 0, 0, false));
+			Assert::AreEqual(-1, gen_chains_all(words, 3, result));
+			Assert::AreEqual(-1, gen_chain_char(words, 3, result, 0, 0, false));
+			Assert::AreEqual(-1, gen_chain_word_unique(words, 3, result));
+		}
+
+		/*
+		* 测试 gui_engine 异常
+		*/ 
+		TEST_METHOD(gui_engine_exception){
+			const char* words = "aa aa";
+			const char* result = gui_engine(words, 0, 0, 0, false);
+			const char* ans = "WordList-GUI: Word ring detected: aa aa\n";
+			Assert::AreEqual(0, strcmp(result, ans));
 		}
 
 	};
