@@ -7,8 +7,6 @@
 #include <cassert>
 #include <string>
 
-#pragma warning(disable:6011)
-
 #pragma warning(disable:6385)
 #pragma warning(disable:6386)
 
@@ -34,16 +32,18 @@ const char** generator(int n, bool DAG, int len, unsigned int Seed){
 		int len = rnd() % 10 + 3;
 		words[i] = (char*)malloc((len + 1ll) * sizeof(char));
 		//assert(words[i] != nullptr);
-		words[i][0] = rnd() % n + 'a';
-		words[i][1] = (char)(i + 'a');
-		for(int j = 2;j < len;j++) words[i][j] = (char)(rnd() % n + 'a');
-		if(DAG && words[i][0] >= words[i][len - 1]){
-			if(words[i][0] == words[i][len - 1]){
-				if(words[i][0] == n - 1 + 'a') words[i][0]--;
-				else words[i][len - 1]++;
-			}else std::swap(words[i][0], words[i][len - 1]);
+		if (words[i] != nullptr){
+			words[i][0] = rnd() % n + 'a';
+			words[i][1] = (char)(i + 'a');
+			for(int j = 2;j < len;j++) words[i][j] = (char)(rnd() % n + 'a');
+			if(DAG && words[i][0] >= words[i][len - 1]){
+				if(words[i][0] == words[i][len - 1]){
+					if(words[i][0] == n - 1 + 'a') words[i][0]--;
+					else words[i][len - 1]++;
+				}else std::swap(words[i][0], words[i][len - 1]);
+			}
+			words[i][len] = 0;
 		}
-		words[i][len] = 0;
 	}
 	return (const char**)words;
 }
