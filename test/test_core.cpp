@@ -346,6 +346,15 @@ namespace test_gen_chains_all_correctness{
 			test(words, 4, ans, 6);
 		}
 
+		/*
+		* 重复单词
+		*/ 
+		TEST_METHOD(duplicate_words){
+			const char* words[] = {"ab", "ab", "bc"};
+			const char* ans[] = {"ab bc"};
+			test(words, 3, ans, 1);
+		}
+
 	};
 }
 

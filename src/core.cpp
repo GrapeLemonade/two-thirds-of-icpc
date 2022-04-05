@@ -305,11 +305,9 @@ int engine(
 	bool weighted = false){
 
 	init_words(words, len);
-	if(type == 3){
-		sort(s.begin(), s.end());
-		s.erase(unique(s.begin(), s.end()), s.end());
-		m = (int)s.size();
-	}
+	sort(s.begin(), s.end());
+	s.erase(unique(s.begin(), s.end()), s.end());
+	m = (int)s.size();
 	get_SCC();
 	if(type < 3) check_loop();
 	if(type == 0) return get_all(result);
