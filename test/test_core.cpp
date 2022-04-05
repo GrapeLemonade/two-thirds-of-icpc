@@ -61,7 +61,7 @@ namespace test_gen_chain_word_correctness{
 		/*
 		* -t 样例
 		*/ 
-		TEST_METHOD(example_t){
+   		TEST_METHOD(example_t){
 			const char* words[] = {"algebra", "apple", "zoo", "elephant", "under", "fox", "dog", "moon", "leaf", "trick", "pseudopseudohypoparathyroidism"};
 			const char* ans[] = {"algebra", "apple", "elephant"};
 			test(words, 11, ans, 3, 0, 't', false);
@@ -484,6 +484,15 @@ namespace test_core_exception {
 		}
 
 		/*
+		* 单词链超过 20000
+		*/ 
+		TEST_METHOD(too_many_word_chains){
+			const char* words[] = {"ab", "abb", "abbb", "bc", "bcc", "bccc", "cd", "cdd", "cddd", "de", "dee", "deee", "ef", "eff", "efff", "fg", "fgg", "fggg", "gh", "ghh", "ghhh", "hi", "hii", "hiii", "ij", "ijj", "ijjj", "jk", "jkk", "jkkk"};
+			char** result = (char**)malloc(10000);
+			Assert::AreEqual(-1, gen_chains_all(words, 30, result));
+		}
+
+		/*
 		* 测试每个接口的异常
 		*/ 
 		TEST_METHOD(four_interface_exception){
@@ -498,7 +507,7 @@ namespace test_core_exception {
 		/*
 		* 测试 gui_engine 异常
 		*/ 
-		TEST_METHOD(gui_engine_exception){
+		TEST_METHOD(test_gui_engine_exception){
 			const char* words = "aa aa";
 			const char* result = gui_engine(words, 0, 0, 0, false);
 			const char* ans = "WordList-GUI: Word ring detected: aa aa\n";

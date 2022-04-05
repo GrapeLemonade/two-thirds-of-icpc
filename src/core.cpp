@@ -116,6 +116,21 @@ void vector_to_result(char* result[]){
 }
 
 vector<int> now;
+int ans_cnt;
+
+void dfs_cal_all(int i, bool loop){
+	if(now.size() > 1){
+		if(ans_cnt > 20000) return;
+		ans_cnt++;
+	}
+	for(auto j : v[i]){
+		int to = s[j].back() - 'a';
+		if(i == to && loop) continue;
+		now.push_back(j);
+		dfs_cal_all(to, i == to);
+		now.pop_back();
+	}
+}
 
 void dfs_all(int i, bool loop){
 	if(now.size() > 1){
@@ -136,6 +151,9 @@ void dfs_all(int i, bool loop){
 }
 
 int get_all(char* result[]){
+	ans_cnt = 0;
+	for(int i = 0;i < 26;i++) dfs_cal_all(i, false);
+	if(ans_cnt > 20000) throw logic_error("Too many word chains!");
 	for(int i = 0;i < 26;i++) dfs_all(i, false);
 	int len = (int)ans.size();
 	vector_to_result(result);
